@@ -1,21 +1,47 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {TodoType} from "../../shared/types/todo.type";
 import {TodoListService} from "../../shared/services/todo-list.service";
+import {ActivatedRoute, Params, Router} from "@angular/router";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-todo-app',
   templateUrl: './todo-app.component.html',
   styleUrls: ['./todo-app.component.scss']
 })
-export class TodoAppComponent implements OnInit {
+export class TodoAppComponent implements OnInit, OnDestroy {
   todos: TodoType[] = [];
+  showedTodos: TodoType[] = [];
+  activeQueryParams: { filter: string } = {filter: ''};
+  private subs: Subscription = new Subscription();
 
-  constructor(private todosListService: TodoListService) {
+  constructor(private todosListService: TodoListService,
+              private activatedRoute: ActivatedRoute,
+              private router: Router) {
   }
 
   ngOnInit() {
-    // Запрашиваем лист todo
-    this.todos = this.todosListService.getTodosList();
+    this.showTodoList();
+  }
+
+  /**
+   * // Запрашиваем лист todo согласно значения фильтра
+   */
+  showTodoList() {
+    this.subs.add(this.activatedRoute.queryParams.subscribe((params: Params): void => {
+      this.todos = this.todosListService.getTodosList();
+      this.showedTodos = this.todos;
+
+      if (params['filter'] === 'all') {
+        this.showedTodos = this.todosListService.getTodosList();
+      } else if (params['filter'] === 'active') {
+        this.showedTodos = this.todos.filter((todo: TodoType) => !todo.status);
+      } else if (params['filter'] === 'completed') {
+        this.showedTodos = this.todos.filter((todo: TodoType) => todo.status);
+      }
+      this.activeQueryParams.filter = params['filter'];
+
+    }));
   }
 
   /**
@@ -23,10 +49,24 @@ export class TodoAppComponent implements OnInit {
    * @param newTodo название новой todo
    */
   addTodo(newTodo: string): void {
-    let lastId: number = this.todos[this.todos.length - 1]?.id;
+    if (newTodo) {
 
-    this.todos.push({title: newTodo, status: false, id: lastId ? lastId + 1 : 1});
-    this.todosListService.toggleTodos((this.todos));
+
+      let lastId: number = this.todos[this.todos.length - 1]?.id;
+
+      this.todos.push({title: newTodo, status: false, id: lastId ? lastId + 1 : 1});
+
+      if (this.activeQueryParams.filter === 'active') {
+        this.showedTodos = this.todos.filter((todo: TodoType) => !todo.status);
+      } else if (this.activeQueryParams.filter === 'completed') {
+        this.showedTodos = this.todos.filter((todo: TodoType) => todo.status);
+      } else {
+        this.showedTodos = this.todos;
+      }
+
+      this.todosListService.toggleTodos((this.todos));
+
+    }
   }
 
   /**
@@ -34,11 +74,20 @@ export class TodoAppComponent implements OnInit {
    * @param event параметры события
    */
   toggleStatusTodo(event: any): void {
-    this.todos.find((todo:TodoType):void => {
+    this.todos.find((todo: TodoType): void => {
       if (Number(todo.id) === Number(event.target.id)) {
         todo.status = event.target.checked;
       }
-    })
+    });
+
+    if (this.activeQueryParams.filter === 'active') {
+      this.showedTodos = this.todos.filter((todo: TodoType) => !todo.status);
+    } else if (this.activeQueryParams.filter === 'completed') {
+      this.showedTodos = this.todos.filter((todo: TodoType) => todo.status);
+    } else {
+      this.showedTodos = this.todos;
+    }
+
     this.todosListService.toggleTodos((this.todos));
   }
 
@@ -48,14 +97,37 @@ export class TodoAppComponent implements OnInit {
    */
   removeTodo(id: number): void {
     this.todos = this.todos.filter((todo: TodoType): boolean => todo.id !== id);
+
+    if (this.activeQueryParams.filter === 'active') {
+      this.showedTodos = this.todos.filter((todo: TodoType) => !todo.status);
+    } else if (this.activeQueryParams.filter === 'completed') {
+      this.showedTodos = this.todos.filter((todo: TodoType) => todo.status);
+    } else {
+      this.showedTodos = this.todos;
+    }
+
     this.todosListService.toggleTodos((this.todos));
   }
 
   /**
    *
    */
-  cleareCompleted(){
-    this.todos = this.todos.filter((todo: TodoType): boolean => todo.status !== true);
+  clearedCompleted() {
+    this.todos = this.todos.filter((todo: TodoType): boolean => !todo.status);
+
+    if (this.activeQueryParams.filter === 'active') {
+      this.showedTodos = this.todos.filter((todo: TodoType) => !todo.status);
+    } else if (this.activeQueryParams.filter === 'completed') {
+      this.showedTodos = this.todos.filter((todo: TodoType) => todo.status);
+    } else {
+      this.showedTodos = this.todos;
+    }
+
     this.todosListService.toggleTodos((this.todos));
   }
+
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
+  }
+
 }

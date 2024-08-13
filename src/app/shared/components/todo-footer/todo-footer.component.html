@@ -1,9 +1,15 @@
 <footer class="footer">
   <div class="count">{{ count }} items left</div>
   <div class="status">
-    <div class="status-item selected">All</div>
-    <div class="status-item">Active</div>
-    <div class="status-item">Completed</div>
+    <div class="status-item selected" [class.selected]="filterParam==='all' || filterParam ===''"
+         (click)="choosingFilterParam('all')">All
+    </div>
+    <div class="status-item" [class.selected]="filterParam==='active'"
+         (click)="choosingFilterParam('active')">Active
+    </div>
+    <div class="status-item" [class.selected]="filterParam==='completed'"
+         (click)="choosingFilterParam('completed')">Completed
+    </div>
   </div>
   <div class="clear" (click)="clearCompleted()">Clear completed</div>
 </footer>
