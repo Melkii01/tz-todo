@@ -1,6 +1,7 @@
 <li>
-  <input type="checkbox" [checked]="todo.status==='complete'" >
-  <label>{{ todo.title }}</label>
-  <button class="destroy"></button>
+  <input type="checkbox" [checked]="todo.status" id="{{ todo.id }}"
+         (change)="toggleChecked($event)">
+  <label [class.checked]="todo.status">{{ todo.title }}</label>
+  <button class="destroy" (click)="removeTodo(todo.id)"></button>
 </li>
 

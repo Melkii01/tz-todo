@@ -1,5 +1,6 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {TodoType} from "../../types/todo.type";
+import {CheckboxControlValueAccessor} from "@angular/forms";
 
 @Component({
   selector: 'app-todo-list-item',
@@ -8,6 +9,8 @@ import {TodoType} from "../../types/todo.type";
 })
 export class TodoListItemComponent implements OnInit {
   @Input() todo: TodoType = {} as TodoType;
+  @Output() checkedEvent = new EventEmitter<any>();
+  @Output() removeEvent = new EventEmitter<number>();
 
   constructor() {
   }
@@ -15,4 +18,13 @@ export class TodoListItemComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  toggleChecked(event: any): void {
+    // console.log(event.target.checked)
+    // console.log(event.target.nextSibling.innerText)
+    this.checkedEvent.emit(event);
+  }
+
+  removeTodo(id: number): void {
+    this.removeEvent.emit(id);
+  }
 }

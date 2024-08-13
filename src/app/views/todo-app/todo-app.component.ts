@@ -14,17 +14,40 @@ export class TodoAppComponent implements OnInit {
   }
 
   ngOnInit() {
+    // Запрашиваем лист todo
     this.todos = this.todosListService.getTodosList();
   }
 
+  /**
+   * Добавить todo
+   * @param newTodo название новой todo
+   */
   addTodo(newTodo: string): void {
-    console.log(newTodo)
-    this.todos.push({title: newTodo, status: 'InProgress'});
+    let lastId: number = this.todos[this.todos.length - 1]?.id;
+
+    this.todos.push({title: newTodo, status: false, id: lastId ? lastId + 1 : 1});
     this.todosListService.toggleTodos((this.todos));
   }
-  // toggleStatusTodo(newStatus: string): void {
-  //   console.log(newStatus)
-  //   this.todos.push({title: newTodo, status: 'InProgress'});
-  //   this.todosListService.toggleTodos((this.todos));
-  // }
+
+  /**
+   * Отметить о выполненности todo или убрать метку
+   * @param event параметры события
+   */
+  toggleStatusTodo(event: any): void {
+    this.todos.find((todo:TodoType):void => {
+      if (Number(todo.id) === Number(event.target.id)) {
+        todo.status = event.target.checked;
+      }
+    })
+    this.todosListService.toggleTodos((this.todos));
+  }
+
+  /**
+   * Удаление todo
+   * @param id идентификатор todo
+   */
+  removeTodo(id: number): void {
+    this.todos = this.todos.filter((todo: TodoType): boolean => todo.id !== id);
+    this.todosListService.toggleTodos((this.todos));
+  }
 }

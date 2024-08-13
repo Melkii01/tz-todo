@@ -7,7 +7,7 @@ import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 })
 export class TodoHeaderComponent implements OnInit {
   newTodo = ''
-  @Output() myEvent = new EventEmitter<string>();
+  @Output() inputEvent = new EventEmitter<string>();
 
   constructor() {
   }
@@ -17,7 +17,7 @@ export class TodoHeaderComponent implements OnInit {
 
   addTodo(): void {
     // console.log(this.newTodo)
-    this.myEvent.emit(this.newTodo);
+    this.inputEvent.emit(this.newTodo);
     this.newTodo = '';
   }
 }

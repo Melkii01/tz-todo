@@ -1,5 +1,8 @@
 <main class="main" *ngIf="todos.length!==0">
   <ul class="todo-list">
-    <app-todo-list-item *ngFor="let todo of todos" [todo]="todo"></app-todo-list-item>
+    <app-todo-list-item *ngFor="let todo of todos"
+                        [todo]="todo"
+                        (checkedEvent)="addTodo($event)"
+                        (removeEvent)="removeTodo($event)"></app-todo-list-item>
   </ul>
 </main>

@@ -1,8 +1,10 @@
 <div class="container">
   <section class="todoapp">
     <h1>Todos</h1>
-    <app-todo-header (myEvent)="addTodo($event)"></app-todo-header>
-    <app-todo-list [todos]="todos"></app-todo-list>
+    <app-todo-header (inputEvent)="addTodo($event)"></app-todo-header>
+    <app-todo-list [todos]="todos"
+                   (checkedEvent)="toggleStatusTodo($event)"
+                   (removeEvent)="removeTodo($event)"></app-todo-list>
     <app-todo-footer *ngIf="todos.length!==0"></app-todo-footer>
   </section>
 

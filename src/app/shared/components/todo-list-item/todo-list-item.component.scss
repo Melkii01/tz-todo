@@ -39,12 +39,22 @@ li {
     transform: scale(1);
   }
 
+  input[type='checkbox']:checked ~ label {
+    color: #0006;
+    text-decoration: line-through;
+  }
+
   label {
     font-size: 24px;
     color: #484848;
     display: flex;
     align-items: center;
     padding: 15px 15px 15px 0;
+
+    //&.checked {
+    //  color: #0006;
+    //  text-decoration: line-through;
+    //}
   }
 
   .destroy {
@@ -52,31 +62,19 @@ li {
     padding: 0;
     border: 0;
     background: none;
-    vertical-align: baseline;
-    font-family: inherit;
-    font-weight: inherit;
-    //color: inherit;
-    -webkit-appearance: none;
-    appearance: none;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
     display: none;
     position: absolute;
-    top: 14px;
+    top: 13px;
     right: 10px;
-    bottom: 0;
-    width: 40px;
-    height: 40px;
-    //margin: auto 0;
+    width: 30px;
+    height: 30px;
     font-size: 30px;
     color: #949494;
-    transition: color .2s ease-out;
+    cursor: pointer;
 
     &:after {
       content: "\d7";
       display: block;
-      height: 100%;
-      line-height: 1.1;
     }
   }
 }
