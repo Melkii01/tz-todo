@@ -1,0 +1,41 @@
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  width: 550px;
+  background: white;
+  box-shadow: inset 0 0 1px #000008;
+  margin: 1px auto 0;
+  padding: 5px 15px;
+  box-sizing: border-box;
+
+  .status {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .status-item {
+      margin: 3px;
+      padding: 3px 7px;
+      text-decoration: none;
+      border: 1px solid transparent;
+      border-radius: 3px;
+      box-sizing: border-box;
+      cursor: pointer;
+
+      &.selected {
+        border-color: #ce4646;
+      }
+      &:hover {
+        border-color: #ce4646;
+      }
+    }
+  }
+
+  .clear {
+    &:hover{
+      text-decoration: underline;
+    }
+  }
+}
