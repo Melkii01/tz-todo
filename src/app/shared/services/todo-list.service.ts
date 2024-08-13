@@ -12,7 +12,7 @@ export class TodoListService {
     return JSON.parse(window.localStorage.getItem('todosList') || '[]');
   }
 
-  toggleTodos(todos: TodoType[]) {
+  setTodosList(todos: TodoType[]) {
     window.localStorage.setItem('todosList', JSON.stringify(todos));
   }
 }

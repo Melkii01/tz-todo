@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {TodoType} from "../../shared/types/todo.type";
 import {TodoListService} from "../../shared/services/todo-list.service";
 import {ActivatedRoute, Params, Router} from "@angular/router";
-import {Subscription} from "rxjs";
+import {concatMap, Subscription} from "rxjs";
 
 @Component({
   selector: 'app-todo-app',
@@ -16,8 +16,7 @@ export class TodoAppComponent implements OnInit, OnDestroy {
   private subs: Subscription = new Subscription();
 
   constructor(private todosListService: TodoListService,
-              private activatedRoute: ActivatedRoute,
-              private router: Router) {
+              private activatedRoute: ActivatedRoute) {
   }
 
   ngOnInit() {
@@ -25,47 +24,36 @@ export class TodoAppComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * // Запрашиваем лист todo согласно значения фильтра
+   * // Запрашиваем лист todo согласно значению фильтра
    */
   showTodoList() {
-    this.subs.add(this.activatedRoute.queryParams.subscribe((params: Params): void => {
-      this.todos = this.todosListService.getTodosList();
-      this.showedTodos = this.todos;
-
-      if (params['filter'] === 'all') {
-        this.showedTodos = this.todosListService.getTodosList();
-      } else if (params['filter'] === 'active') {
-        this.showedTodos = this.todos.filter((todo: TodoType) => !todo.status);
-      } else if (params['filter'] === 'completed') {
-        this.showedTodos = this.todos.filter((todo: TodoType) => todo.status);
-      }
-      this.activeQueryParams.filter = params['filter'];
-
-    }));
+    this.todos = this.todosListService.getTodosList();
+    this.subs.add(this.activatedRoute.queryParams.pipe(
+      concatMap((params: Params) => {
+        this.activeQueryParams.filter = params['filter'];
+        return params['filter'];
+      }),
+    ).subscribe({
+        next: () => {
+          this.showedTodosFilter();
+        },
+        error: (err) => {
+          throw Error(err);
+        },
+      },
+    ));
   }
 
   /**
-   * Добавить todo
+   * Добавить todo в лист
    * @param newTodo название новой todo
    */
   addTodo(newTodo: string): void {
     if (newTodo) {
-
-
       let lastId: number = this.todos[this.todos.length - 1]?.id;
-
       this.todos.push({title: newTodo, status: false, id: lastId ? lastId + 1 : 1});
 
-      if (this.activeQueryParams.filter === 'active') {
-        this.showedTodos = this.todos.filter((todo: TodoType) => !todo.status);
-      } else if (this.activeQueryParams.filter === 'completed') {
-        this.showedTodos = this.todos.filter((todo: TodoType) => todo.status);
-      } else {
-        this.showedTodos = this.todos;
-      }
-
-      this.todosListService.toggleTodos((this.todos));
-
+      this.showedTodosFilter();
     }
   }
 
@@ -80,41 +68,30 @@ export class TodoAppComponent implements OnInit, OnDestroy {
       }
     });
 
-    if (this.activeQueryParams.filter === 'active') {
-      this.showedTodos = this.todos.filter((todo: TodoType) => !todo.status);
-    } else if (this.activeQueryParams.filter === 'completed') {
-      this.showedTodos = this.todos.filter((todo: TodoType) => todo.status);
-    } else {
-      this.showedTodos = this.todos;
-    }
-
-    this.todosListService.toggleTodos((this.todos));
+    this.showedTodosFilter();
   }
 
   /**
-   * Удаление todo
+   * Удаление todo из листа
    * @param id идентификатор todo
    */
   removeTodo(id: number): void {
     this.todos = this.todos.filter((todo: TodoType): boolean => todo.id !== id);
-
-    if (this.activeQueryParams.filter === 'active') {
-      this.showedTodos = this.todos.filter((todo: TodoType) => !todo.status);
-    } else if (this.activeQueryParams.filter === 'completed') {
-      this.showedTodos = this.todos.filter((todo: TodoType) => todo.status);
-    } else {
-      this.showedTodos = this.todos;
-    }
-
-    this.todosListService.toggleTodos((this.todos));
+    this.showedTodosFilter();
   }
 
   /**
-   *
+   * Убирает из листа завершенные todo
    */
   clearedCompleted() {
     this.todos = this.todos.filter((todo: TodoType): boolean => !todo.status);
+    this.showedTodosFilter();
+  }
 
+  /**
+   * Показывает отфильрованный лист todo
+   */
+  showedTodosFilter() {
     if (this.activeQueryParams.filter === 'active') {
       this.showedTodos = this.todos.filter((todo: TodoType) => !todo.status);
     } else if (this.activeQueryParams.filter === 'completed') {
@@ -123,11 +100,10 @@ export class TodoAppComponent implements OnInit, OnDestroy {
       this.showedTodos = this.todos;
     }
 
-    this.todosListService.toggleTodos((this.todos));
+    this.todosListService.setTodosList((this.todos));
   }
 
   ngOnDestroy(): void {
     this.subs.unsubscribe();
   }
-
 }
