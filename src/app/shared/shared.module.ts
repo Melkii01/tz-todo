@@ -5,6 +5,8 @@ import {TodoHeaderComponent} from './components/todo-header/todo-header.componen
 import {TodoListComponent} from './components/todo-list/todo-list.component';
 import {TodoFooterComponent} from './components/todo-footer/todo-footer.component';
 import { TodoListItemComponent } from './components/todo-list-item/todo-list-item.component';
+import {FormsModule} from "@angular/forms";
+import {LayoutComponent} from "./layout/layout.component";
 
 
 @NgModule({
@@ -13,16 +15,19 @@ import { TodoListItemComponent } from './components/todo-list-item/todo-list-ite
     TodoListComponent,
     TodoFooterComponent,
     TodoListItemComponent,
+    LayoutComponent,
   ],
-  imports: [
-    CommonModule,
-    RouterModule
-  ],
+    imports: [
+        CommonModule,
+        RouterModule,
+        FormsModule
+    ],
   exports: [
     TodoHeaderComponent,
     TodoListComponent,
     TodoFooterComponent,
-    TodoListItemComponent
+    TodoListItemComponent,
+    LayoutComponent,
   ]
 })
 export class SharedModule {
