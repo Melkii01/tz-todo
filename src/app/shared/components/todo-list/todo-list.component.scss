@@ -1,0 +1,14 @@
+.main {
+  display: flex;
+  justify-content: center;
+  background: transparent;
+
+  .todo-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    width: 550px;
+    box-sizing: border-box;
+  }
+}
+

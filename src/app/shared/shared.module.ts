@@ -4,6 +4,7 @@ import {RouterModule} from "@angular/router";
 import {TodoHeaderComponent} from './components/todo-header/todo-header.component';
 import {TodoListComponent} from './components/todo-list/todo-list.component';
 import {TodoFooterComponent} from './components/todo-footer/todo-footer.component';
+import { TodoListItemComponent } from './components/todo-list-item/todo-list-item.component';
 
 
 @NgModule({
@@ -11,6 +12,7 @@ import {TodoFooterComponent} from './components/todo-footer/todo-footer.componen
     TodoHeaderComponent,
     TodoListComponent,
     TodoFooterComponent,
+    TodoListItemComponent,
   ],
   imports: [
     CommonModule,
@@ -20,6 +22,7 @@ import {TodoFooterComponent} from './components/todo-footer/todo-footer.componen
     TodoHeaderComponent,
     TodoListComponent,
     TodoFooterComponent,
+    TodoListItemComponent
   ]
 })
 export class SharedModule {

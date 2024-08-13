@@ -1,10 +1,13 @@
 .container{
-  h1 {
-    font-size: 80px;
-    font-weight: 200;
+  .todoapp{
     text-align: center;
-    color: #b83f45;
-    margin-bottom: 0;
+    h1 {
+      font-size: 80px;
+      font-weight: 200;
+      text-align: center;
+      color: #b83f45;
+      margin-bottom: 0;
+    }
   }
 
   .info {
