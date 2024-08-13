@@ -50,4 +50,12 @@ export class TodoAppComponent implements OnInit {
     this.todos = this.todos.filter((todo: TodoType): boolean => todo.id !== id);
     this.todosListService.toggleTodos((this.todos));
   }
+
+  /**
+   *
+   */
+  cleareCompleted(){
+    this.todos = this.todos.filter((todo: TodoType): boolean => todo.status !== true);
+    this.todosListService.toggleTodos((this.todos));
+  }
 }
