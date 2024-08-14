@@ -11,7 +11,8 @@ export class TodoListComponent implements OnInit {
   @Output() checkedEvent = new EventEmitter<Event>();
   @Output() removeEvent = new EventEmitter<number>();
   @Input() countAll = 0;
-  @Output() checkedAllTodosEvent = new EventEmitter<Event>();
+  @Output() checkedAllTodosEvent = new EventEmitter<any>();
+  @Output() editedTodoEvent = new EventEmitter<{ title: string, id: number }>();
 
   constructor() {
   }
@@ -27,7 +28,11 @@ export class TodoListComponent implements OnInit {
     this.removeEvent.emit(id);
   }
 
-  checkedAllTodos(event: Event) {
+  checkedAllTodos(event: any) {
     this.checkedAllTodosEvent.emit(event);
+  }
+
+  editedTodo(event: { title: string, id: number }) {
+    this.editedTodoEvent.emit(event);
   }
 }

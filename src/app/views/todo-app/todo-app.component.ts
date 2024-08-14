@@ -70,14 +70,6 @@ export class TodoAppComponent implements OnInit, OnDestroy {
     this.countLeft = quantity;
     this.checkedSomeOne = checked;
 
-
-    this.todos.forEach((todo) => {
-      if (!todo.status) {
-        quantity++;
-      }
-    });
-    this.countLeft = quantity;
-
     this.todosListService.setTodosList((this.todos));
   }
 
@@ -144,6 +136,19 @@ export class TodoAppComponent implements OnInit, OnDestroy {
     this.showedTodosFilter();
   }
 
+  /**
+   * Редактироует todo
+   */
+  editTodo(event: {title:string,id:number}) {
+    console.log(event)
+    this.todos.find((todo: TodoType): void => {
+      if (Number(todo.id) === Number(event.id)) {
+        todo.title = event.title;
+      }
+    });
+
+    this.showedTodosFilter();
+  }
 
   ngOnDestroy(): void {
     this.subs.unsubscribe();
