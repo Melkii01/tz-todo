@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {TodoType} from "../../shared/types/todo.type";
 import {TodoListService} from "../../shared/services/todo-list.service";
-import {ActivatedRoute, Params, Router} from "@angular/router";
+import {ActivatedRoute, Params} from "@angular/router";
 import {concatMap, Subscription} from "rxjs";
 
 @Component({
@@ -31,10 +31,10 @@ export class TodoAppComponent implements OnInit, OnDestroy {
     this.subs.add(this.activatedRoute.queryParams.pipe(
       concatMap((params: Params) => {
         this.activeQueryParams.filter = params['filter'];
-        return params['filter'];
+        return [params['filter']];
       }),
     ).subscribe({
-        next: () => {
+        next: (filter) => {
           this.showedTodosFilter();
         },
         error: (err) => {
@@ -42,6 +42,21 @@ export class TodoAppComponent implements OnInit, OnDestroy {
         },
       },
     ));
+  }
+
+  /**
+   * Показывает отфильрованный лист todo
+   */
+  showedTodosFilter() {
+    if (this.activeQueryParams.filter === 'active') {
+      this.showedTodos = this.todos.filter((todo: TodoType) => !todo.status);
+    } else if (this.activeQueryParams.filter === 'completed') {
+      this.showedTodos = this.todos.filter((todo: TodoType) => todo.status);
+    } else {
+      this.showedTodos = this.todos;
+    }
+
+    this.todosListService.setTodosList((this.todos));
   }
 
   /**
@@ -88,20 +103,6 @@ export class TodoAppComponent implements OnInit, OnDestroy {
     this.showedTodosFilter();
   }
 
-  /**
-   * Показывает отфильрованный лист todo
-   */
-  showedTodosFilter() {
-    if (this.activeQueryParams.filter === 'active') {
-      this.showedTodos = this.todos.filter((todo: TodoType) => !todo.status);
-    } else if (this.activeQueryParams.filter === 'completed') {
-      this.showedTodos = this.todos.filter((todo: TodoType) => todo.status);
-    } else {
-      this.showedTodos = this.todos;
-    }
-
-    this.todosListService.setTodosList((this.todos));
-  }
 
   ngOnDestroy(): void {
     this.subs.unsubscribe();

@@ -1,6 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {TodoType} from "../../types/todo.type";
-import {CheckboxControlValueAccessor} from "@angular/forms";
 
 @Component({
   selector: 'app-todo-list-item',
