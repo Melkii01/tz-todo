@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {TodoType} from "../../types/todo.type";
 
 @Component({
@@ -6,33 +6,43 @@ import {TodoType} from "../../types/todo.type";
   templateUrl: './todo-list.component.html',
   styleUrls: ['./todo-list.component.scss']
 })
-export class TodoListComponent implements OnInit {
+export class TodoListComponent {
   @Input() todos: TodoType[] = [];
   @Output() checkedEvent = new EventEmitter<Event>();
   @Output() removeEvent = new EventEmitter<number>();
   @Input() countAll = 0;
   @Output() checkedAllTodosEvent = new EventEmitter<any>();
-  @Output() editedTodoEvent = new EventEmitter<{ title: string, id: number }>();
+  @Output() editedTodoEvent = new EventEmitter<TodoType>();
 
-  constructor() {
-  }
-
-  ngOnInit(): void {
-  }
-
-  addTodo(event: Event) {
+  /**
+   * Отправляет отметку todo родителю
+   * @param event параметры события
+   */
+  toggleChecked(event: Event): void {
     this.checkedEvent.emit(event);
   }
 
-  removeTodo(id: number) {
+  /**
+   * Отправляет действие клика на удаление todo родителю
+   * @param id идентификатор todo
+   */
+  removeTodo(id: number): void {
     this.removeEvent.emit(id);
   }
 
-  checkedAllTodos(event: any) {
+  /**
+   * Отправляет все отметки todos родителю
+   * @param event параметры события
+   */
+  checkedAllTodos(event: any): void {
     this.checkedAllTodosEvent.emit(event);
   }
 
-  editedTodo(event: { title: string, id: number }) {
+  /**
+   *Отправляет новые значения todo родителю
+   * @param event параметры события
+   */
+  editedTodo(event: TodoType): void {
     this.editedTodoEvent.emit(event);
   }
 }

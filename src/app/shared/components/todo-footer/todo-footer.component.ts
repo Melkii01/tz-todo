@@ -10,10 +10,8 @@ import {ActivatedRoute, Params, Router} from "@angular/router";
 export class TodoFooterComponent implements OnInit, OnDestroy {
   @Input() count: number = 0;
   @Output() clearedCompletedEvent = new EventEmitter<string>();
-  @Input() checkedSomeOne:boolean  = false;
-
+  @Input() checkedSomeOne: boolean = false;
   private subs: Subscription = new Subscription();
-
   public filterParam: string = '';
 
   constructor(private activatedRoute: ActivatedRoute,
@@ -21,6 +19,10 @@ export class TodoFooterComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.init();
+  }
+
+  init(): void {
     this.subs.add(this.activatedRoute.queryParams.subscribe((params: Params) => {
       if (params['filter'] === 'all') {
         this.filterParam = 'all';
@@ -33,12 +35,16 @@ export class TodoFooterComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Убрать заврешенные todo (надо доработать)
+   * Отправляет событие на удаление завершенных todo
    */
-  clearCompleted() {
+  clearCompleted(): void {
     this.clearedCompletedEvent.emit('');
   }
 
+  /**
+   * Меняет фильтр параметры согласно запросам
+   * @param filter параметры фильтра
+   */
   choosingFilterParam(filter: string): void {
     this.router.navigate([], {
       relativeTo: this.activatedRoute,

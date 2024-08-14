@@ -1,18 +1,22 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {TodoType} from "../types/todo.type";
 
 @Injectable({
   providedIn: 'root'
 })
 export class TodoListService {
-
-  constructor() { }
-
-  getTodosList() {
+  /**
+   * Запрашивает список todo
+   */
+  getTodosList(): TodoType[] | [] {
     return JSON.parse(window.localStorage.getItem('todosList') || '[]');
   }
 
-  setTodosList(todos: TodoType[]) {
+  /**
+   * Отправляем новый отредактированный список
+   * @param todos список
+   */
+  setTodosList(todos: TodoType[]): void {
     window.localStorage.setItem('todosList', JSON.stringify(todos));
   }
 }

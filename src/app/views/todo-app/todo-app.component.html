@@ -5,13 +5,13 @@
 
     <app-todo-list [todos]="showedTodos" [countAll]="todos.length"
                    (checkedEvent)="toggleStatusTodo($event)"
-                   (checkedAllTodosEvent)="checkedAllTodos($event)"
+                   (checkedAllTodosEvent)="checkedAllTodos()"
                    (editedTodoEvent)="editTodo($event)"
                    (removeEvent)="removeTodo($event)"></app-todo-list>
 
     <app-todo-footer *ngIf="todos.length!==0"
                      [count]="countLeft"
-                     [checkedSomeOne]="checkedSomeOne"
+                     [checkedSomeOne]="checkedAtLeastOne"
                      (clearedCompletedEvent)="clearedCompleted()"></app-todo-footer>
   </section>
 
