@@ -3,12 +3,13 @@
     <h1>Todos</h1>
     <app-todo-header (inputEvent)="addTodo($event)"></app-todo-header>
 
-    <app-todo-list [todos]="showedTodos"
+    <app-todo-list [todos]="showedTodos" [countAll]="todos.length"
                    (checkedEvent)="toggleStatusTodo($event)"
+                   (checkedAllTodosEvent)="checkedAllTodos($event)"
                    (removeEvent)="removeTodo($event)"></app-todo-list>
 
     <app-todo-footer *ngIf="todos.length!==0"
-                     [count]="todos.length"
+                     [count]="countLeft"
                      (clearedCompletedEvent)="clearedCompleted()"></app-todo-footer>
   </section>
 

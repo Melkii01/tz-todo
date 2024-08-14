@@ -8,8 +8,10 @@ import {TodoType} from "../../types/todo.type";
 })
 export class TodoListComponent implements OnInit {
   @Input() todos: TodoType[] = [];
-  @Output() checkedEvent = new EventEmitter<any>();
+  @Output() checkedEvent = new EventEmitter<Event>();
   @Output() removeEvent = new EventEmitter<number>();
+  @Input() countAll = 0;
+  @Output() checkedAllTodosEvent = new EventEmitter<Event>();
 
   constructor() {
   }
@@ -17,11 +19,15 @@ export class TodoListComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  addTodo(event: any) {
+  addTodo(event: Event) {
     this.checkedEvent.emit(event);
   }
 
   removeTodo(id: number) {
     this.removeEvent.emit(id);
+  }
+
+  checkedAllTodos(event: Event) {
+    this.checkedAllTodosEvent.emit(event);
   }
 }

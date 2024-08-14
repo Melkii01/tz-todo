@@ -9,6 +9,19 @@
     list-style: none;
     width: 550px;
     box-sizing: border-box;
+    position: relative;
+
+    .arrow-hidden {
+      position: absolute;
+      top: -40px;
+      left: 20px;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
   }
 }
 

@@ -8,7 +8,7 @@ import {TodoType} from "../../types/todo.type";
 })
 export class TodoListItemComponent implements OnInit {
   @Input() todo: TodoType = {} as TodoType;
-  @Output() checkedEvent = new EventEmitter<any>();
+  @Output() checkedEvent = new EventEmitter<Event>();
   @Output() removeEvent = new EventEmitter<number>();
 
   constructor() {
@@ -17,7 +17,7 @@ export class TodoListItemComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  toggleChecked(event: any): void {
+  toggleChecked(event: Event): void {
     // console.log(event.target.checked)
     // console.log(event.target.nextSibling.innerText)
     this.checkedEvent.emit(event);

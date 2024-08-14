@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, EventEmitter, OnDestroy, OnInit} from '@angular/core';
 import {TodoType} from "../../shared/types/todo.type";
 import {TodoListService} from "../../shared/services/todo-list.service";
 import {ActivatedRoute, Params} from "@angular/router";
@@ -14,6 +14,7 @@ export class TodoAppComponent implements OnInit, OnDestroy {
   showedTodos: TodoType[] = [];
   activeQueryParams: { filter: string } = {filter: ''};
   private subs: Subscription = new Subscription();
+  countLeft: number = 0;
 
   constructor(private todosListService: TodoListService,
               private activatedRoute: ActivatedRoute) {
@@ -56,6 +57,14 @@ export class TodoAppComponent implements OnInit, OnDestroy {
       this.showedTodos = this.todos;
     }
 
+    let quantity: number = 0;
+    this.todos.forEach((todo) => {
+      if (!todo.status) {
+        quantity++;
+      }
+    });
+    this.countLeft = quantity;
+
     this.todosListService.setTodosList((this.todos));
   }
 
@@ -82,6 +91,25 @@ export class TodoAppComponent implements OnInit, OnDestroy {
         todo.status = event.target.checked;
       }
     });
+
+    this.showedTodosFilter();
+  }
+
+  /**
+   * Отметить выполненными все todo или убрать отметку
+   * @param event параметры события
+   */
+  checkedAllTodos(event: any) {
+    if (this.todos.some((todo: TodoType) => !todo.status)) {
+      // Если не выделена хоть одна, выделяем все
+      this.todos.map((todo: TodoType) => todo.status = true);
+    } else if (this.todos.every((todo: TodoType) => todo.status)) {
+      // Если выделены все, убираем отметки
+      this.todos.map((todo: TodoType) => todo.status = false);
+    } else if (this.todos.every((todo: TodoType) => !todo.status)) {
+      // Если нет отметок, выделяем все
+      this.todos.map((todo: TodoType) => todo.status = true);
+    }
 
     this.showedTodosFilter();
   }
