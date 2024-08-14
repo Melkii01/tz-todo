@@ -15,6 +15,7 @@ export class TodoAppComponent implements OnInit, OnDestroy {
   activeQueryParams: { filter: string } = {filter: ''};
   private subs: Subscription = new Subscription();
   countLeft: number = 0;
+  checkedSomeOne: boolean = false;
 
   constructor(private todosListService: TodoListService,
               private activatedRoute: ActivatedRoute) {
@@ -58,6 +59,18 @@ export class TodoAppComponent implements OnInit, OnDestroy {
     }
 
     let quantity: number = 0;
+    let checked: boolean = false;
+    this.todos.forEach((todo) => {
+      if (!todo.status) {
+        quantity++;
+      } else if (todo.status) {
+        checked = true;
+      }
+    });
+    this.countLeft = quantity;
+    this.checkedSomeOne = checked;
+
+
     this.todos.forEach((todo) => {
       if (!todo.status) {
         quantity++;

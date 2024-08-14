@@ -10,6 +10,7 @@
 
     <app-todo-footer *ngIf="todos.length!==0"
                      [count]="countLeft"
+                     [checkedSomeOne]="checkedSomeOne"
                      (clearedCompletedEvent)="clearedCompleted()"></app-todo-footer>
   </section>
 

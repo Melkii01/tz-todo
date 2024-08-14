@@ -11,5 +11,7 @@
          (click)="choosingFilterParam('completed')">Completed
     </div>
   </div>
-  <div class="clear" (click)="clearCompleted()">Clear completed</div>
+  <div class="clear" (click)="clearCompleted()"
+       [class.hidden]="!checkedSomeOne">Clear completed
+  </div>
 </footer>

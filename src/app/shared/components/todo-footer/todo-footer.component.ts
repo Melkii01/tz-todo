@@ -10,6 +10,7 @@ import {ActivatedRoute, Params, Router} from "@angular/router";
 export class TodoFooterComponent implements OnInit, OnDestroy {
   @Input() count: number = 0;
   @Output() clearedCompletedEvent = new EventEmitter<string>();
+  @Input() checkedSomeOne:boolean  = false;
 
   private subs: Subscription = new Subscription();
 

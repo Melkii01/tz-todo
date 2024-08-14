@@ -34,6 +34,9 @@
   }
 
   .clear {
+    &.hidden{
+      visibility: hidden;
+    }
     &:hover{
       text-decoration: underline;
       cursor: pointer;
