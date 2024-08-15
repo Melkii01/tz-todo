@@ -14,6 +14,7 @@ export class TodoFooterComponent implements OnInit, OnDestroy {
   @Input() checkedSomeOne: boolean = false;
   private subs: Subscription = new Subscription();
   public filterParam: string = '';
+  protected readonly FilterNamesEnum = FilterNamesEnum;
 
   constructor(private activatedRoute: ActivatedRoute,
               private router: Router) {
@@ -29,7 +30,7 @@ export class TodoFooterComponent implements OnInit, OnDestroy {
         this.filterParam = FilterNamesEnum.all;
       } else if (params[FilterNamesEnum.filter] === FilterNamesEnum.active) {
         this.filterParam = FilterNamesEnum.active;
-      } else if (params[FilterNamesEnum.filter] === FilterNamesEnum.all) {
+      } else if (params[FilterNamesEnum.filter] === FilterNamesEnum.completed) {
         this.filterParam = FilterNamesEnum.completed;
       }
     }));
@@ -58,5 +59,4 @@ export class TodoFooterComponent implements OnInit, OnDestroy {
     this.subs.unsubscribe();
   }
 
-  protected readonly FilterNamesEnum = FilterNamesEnum;
 }

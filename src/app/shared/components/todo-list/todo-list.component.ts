@@ -10,7 +10,7 @@ export class TodoListComponent {
   @Input() todos: TodoType[] = [];
   @Output() checkedTodoEvent = new EventEmitter<number>();
   @Output() removeTodoEvent = new EventEmitter<number>();
-  @Input() countAll = 0;
+  @Input() countAll:number = 0;
   @Output() checkedAllTodoEvent = new EventEmitter<string>();
   @Output() editedTodoEvent = new EventEmitter<TodoType>();
 
