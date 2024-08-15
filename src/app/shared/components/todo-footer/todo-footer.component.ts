@@ -1,6 +1,7 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {Subscription} from "rxjs";
 import {ActivatedRoute, Params, Router} from "@angular/router";
+import {FilterNamesEnum} from "../../types/filter-names.enum";
 
 @Component({
   selector: 'app-todo-footer',
@@ -24,12 +25,12 @@ export class TodoFooterComponent implements OnInit, OnDestroy {
 
   init(): void {
     this.subs.add(this.activatedRoute.queryParams.subscribe((params: Params) => {
-      if (params['filter'] === 'all') {
-        this.filterParam = 'all';
-      } else if (params['filter'] === 'active') {
-        this.filterParam = 'active';
-      } else if (params['filter'] === 'completed') {
-        this.filterParam = 'completed';
+      if (params[FilterNamesEnum.filter] === FilterNamesEnum.all) {
+        this.filterParam = FilterNamesEnum.all;
+      } else if (params[FilterNamesEnum.filter] === FilterNamesEnum.active) {
+        this.filterParam = FilterNamesEnum.active;
+      } else if (params[FilterNamesEnum.filter] === FilterNamesEnum.all) {
+        this.filterParam = FilterNamesEnum.completed;
       }
     }));
   }
@@ -56,4 +57,6 @@ export class TodoFooterComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subs.unsubscribe();
   }
+
+  protected readonly FilterNamesEnum = FilterNamesEnum;
 }

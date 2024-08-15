@@ -8,18 +8,18 @@ import {TodoType} from "../../types/todo.type";
 })
 export class TodoListComponent {
   @Input() todos: TodoType[] = [];
-  @Output() checkedEvent = new EventEmitter<Event>();
-  @Output() removeEvent = new EventEmitter<number>();
+  @Output() checkedTodoEvent = new EventEmitter<number>();
+  @Output() removeTodoEvent = new EventEmitter<number>();
   @Input() countAll = 0;
-  @Output() checkedAllTodosEvent = new EventEmitter<any>();
+  @Output() checkedAllTodoEvent = new EventEmitter<string>();
   @Output() editedTodoEvent = new EventEmitter<TodoType>();
 
   /**
    * Отправляет отметку todo родителю
-   * @param event параметры события
+   * @param id идентификатор todo
    */
-  toggleChecked(event: Event): void {
-    this.checkedEvent.emit(event);
+  checkedTodo(id: number): void {
+    this.checkedTodoEvent.emit(id);
   }
 
   /**
@@ -27,15 +27,14 @@ export class TodoListComponent {
    * @param id идентификатор todo
    */
   removeTodo(id: number): void {
-    this.removeEvent.emit(id);
+    this.removeTodoEvent.emit(id);
   }
 
   /**
    * Отправляет все отметки todos родителю
-   * @param event параметры события
    */
-  checkedAllTodos(event: any): void {
-    this.checkedAllTodosEvent.emit(event);
+  checkedAllTodo(): void {
+    this.checkedAllTodoEvent.emit('');
   }
 
   /**

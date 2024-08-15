@@ -2,17 +2,17 @@
   <input type="checkbox"
          [checked]="todo.status"
          id="{{ todo.id }}"
-         (change)="toggleChecked($event)">
+         (change)="toggleChecked()">
 
   <label [class.checked]="todo.status"
-         (dblclick)="openEdit($event)">{{ todo.title }}</label>
+         (dblclick)="openEdit()">{{ todo.title }}</label>
 
-  <button class="destroy" (click)="removeTodo(todo.id)"></button>
+  <button class="destroy" (click)="removeTodo()"></button>
 
   <input type="text" class="edit"
          [(ngModel)]="todoText"
          *ngIf="isEdit"
-         (keyup.enter)="closeEdit($event)"
+         (keyup.enter)="closeEdit()"
          id="{{ todo.id }}">
 </li>
 

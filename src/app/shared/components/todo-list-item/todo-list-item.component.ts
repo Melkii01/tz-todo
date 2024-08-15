@@ -8,8 +8,8 @@ import {TodoType} from "../../types/todo.type";
 })
 export class TodoListItemComponent {
   @Input() todo: TodoType = {} as TodoType;
-  @Output() checkedEvent = new EventEmitter<any>();
-  @Output() removeEvent = new EventEmitter<number>();
+  @Output() checkedTodoEvent = new EventEmitter<number>();
+  @Output() removeTodoEvent = new EventEmitter<number>();
   todoText: string = '';
   isEdit: boolean = false;
   @Output() editedTodoEvent = new EventEmitter<TodoType>();
@@ -19,35 +19,31 @@ export class TodoListItemComponent {
 
   /**
    * Отправляет действие клика на чекбокс родителю
-   * @param event параметры события
    */
-  toggleChecked(event: any): void {
-    this.checkedEvent.emit(event);
+  toggleChecked(): void {
+    this.checkedTodoEvent.emit(this.todo.id);
   }
 
   /**
    * Отправляет действие клика на удаление todo родителю
-   * @param id идентификатор todo
    */
-  removeTodo(id: number): void {
-    this.removeEvent.emit(id);
+  removeTodo(): void {
+    this.removeTodoEvent.emit(this.todo.id);
   }
 
   /**
    * Открывает редактор todo
-   * @param event параметры события
    */
-  openEdit(event: any): void {
-    this.todoText = event.target.innerText;
+  openEdit(): void {
+    this.todoText = this.todo.title;
     this.isEdit = true;
   }
 
   /**
    * Закрывает редактор todo и отправляет новые значения todo родителю
-   * @param event параметры события
    */
-  closeEdit(event: any): void {
-    this.editedTodoEvent.emit({title: this.todoText, id: event.target.id});
+  closeEdit(): void {
+    this.editedTodoEvent.emit({title: this.todoText, id: this.todo.id, status: this.todo.status});
     this.isEdit = false;
   }
 
@@ -57,7 +53,6 @@ export class TodoListItemComponent {
    */
   @HostListener('document:mousedown', ['$event'])
   onGlobalClick(event: MouseEvent): void {
-    console.log(event)
     if (!this.elementRef.nativeElement.contains(event.target)) {
       this.isEdit = false;
     }

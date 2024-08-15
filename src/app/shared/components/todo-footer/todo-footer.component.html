@@ -3,18 +3,18 @@
 
   <div class="status">
     <div class="status-item selected"
-         [class.selected]="filterParam==='all' || filterParam ===''"
-         (click)="choosingFilterParam('all')">All
+         [class.selected]="filterParam === FilterNamesEnum.all || filterParam ===''"
+         (click)="choosingFilterParam(FilterNamesEnum.all)">All
     </div>
 
     <div class="status-item"
-         [class.selected]="filterParam==='active'"
-         (click)="choosingFilterParam('active')">Active
+         [class.selected]="filterParam === FilterNamesEnum.active"
+         (click)="choosingFilterParam( FilterNamesEnum.active)">Active
     </div>
 
     <div class="status-item"
-         [class.selected]="filterParam==='completed'"
-         (click)="choosingFilterParam('completed')">Completed
+         [class.selected]="filterParam ===  FilterNamesEnum.completed"
+         (click)="choosingFilterParam(FilterNamesEnum.completed)">Completed
     </div>
   </div>
   <div class="clear" (click)="clearCompleted()"
