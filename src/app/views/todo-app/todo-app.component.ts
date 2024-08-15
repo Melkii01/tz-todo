@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Todo} from "../../shared/types/todo";
 import {TodoListService} from "../../shared/services/todo-list.service";
 import {ActivatedRoute, Params} from "@angular/router";
-import {concatMap, Subscription} from "rxjs";
+import {Subscription, tap} from "rxjs";
 import {FilterNames} from "../../shared/types/filter-names";
 
 @Component({
@@ -23,46 +23,39 @@ export class TodoAppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    // Запрашиваем значения списка и показываемого списка todo
+    this.todos = this.todosListService.getTodosList();
+    this.showedTodos = this.todosListService.getShowedTodosList();
+
+    // Следим за показываемыми todo
+    this.subs.add(this.todosListService.showedTodos$.subscribe((todos: Todo[]) => {
+      this.showedTodos = todos;
+    }));
     this.getTodoList();
   }
 
   /**
-   * // Запрашивает список todo согласно значению фильтра
+   * // Запрашиваем query параметры согласно значению фильтра
    */
-  getTodoList():void {
-    this.todos = this.todosListService.getTodosList();
+  getTodoList(): void {
     this.subs.add(this.activatedRoute.queryParams.pipe(
-      concatMap((params: Params) => {
-        this.activeQueryParams.filter = params[FilterNames.filter];
-        return [params[FilterNames.filter]];
-      }),
-    ).subscribe({
-        next: ():void => {
+      tap(((params: Params) => {
+          this.activeQueryParams.filter = params[FilterNames.filter];
           this.showedTodosWithFilter();
-        },
-        error: (err):void => {
-          throw Error(err);
-        },
-      },
-    ));
+        }),
+      )).subscribe())
   }
 
   /**
-   * Показывает отфильрованный список todo
+   * Показывает отфильрованный показываемый список todo
    */
   showedTodosWithFilter() {
-    if (this.activeQueryParams.filter === FilterNames.active) {
-      this.showedTodos = this.todos.filter((todo: Todo) => !todo.status);
-    } else if (this.activeQueryParams.filter === FilterNames.completed) {
-      this.showedTodos = this.todos.filter((todo: Todo) => todo.status);
-    } else {
-      this.showedTodos = this.todos;
-    }
+    this.todosListService.showedTodosWithFilter(this.activeQueryParams.filter);
 
     // Читаем количество незавершенных todo и ищем хотя бы один статус true
     let quantity: number = 0;
     let checked: boolean = false;
-    this.todos.forEach((todo) => {
+    this.todosListService.getTodosList().forEach((todo) => {
       if (!todo.status) {
         quantity++;
       } else if (todo.status) {
@@ -71,52 +64,33 @@ export class TodoAppComponent implements OnInit, OnDestroy {
     });
     this.countLeft = quantity;
     this.checkedAtLeastOne = checked;
-
-    this.todosListService.setTodosList((this.todos));
   }
 
   /**
    * Добавляет новый todo в список
-   * @param newTodo название новой todo
+   * @param newTodoName название новой todo
    */
-  addTodo(newTodo: string): void {
-    if (newTodo) {
-      let lastId: number = this.todos[this.todos.length - 1]?.id;
-      this.todos.push({title: newTodo, status: false, id: lastId ? lastId + 1 : 1});
-
+  addTodo(newTodoName: string): void {
+    if (newTodoName) {
+      this.todosListService.addTodo(newTodoName);
       this.showedTodosWithFilter();
     }
   }
 
   /**
-   * Отмечает о выполненности todo или убрать метку
+   * Отмечает о выполненности todo или убирает метку
    * @param id идентификатор todo
    */
   toggleCheckedTodo(id: number): void {
-    this.todos.find((todo: Todo): void => {
-      if (Number(todo.id) === Number(id)) {
-        todo.status = !todo.status;
-      }
-    });
-
+    this.todosListService.toggleCheckedTodo(id);
     this.showedTodosWithFilter();
   }
 
   /**
-   * Отмечает выполненными все todo или убрать отметку
+   * Отмечает выполненными все todo или убирает метки
    */
   checkedAllTodo() {
-    if (this.todos.some((todo: Todo) => !todo.status)) {
-      // Если не выделена хоть одна, выделяем все
-      this.todos.map((todo: Todo) => todo.status = true);
-    } else if (this.todos.every((todo: Todo) => todo.status)) {
-      // Если выделены все, убираем отметки
-      this.todos.map((todo: Todo) => todo.status = false);
-    } else if (this.todos.every((todo: Todo) => !todo.status)) {
-      // Если нет отметок, выделяем все
-      this.todos.map((todo: Todo) => todo.status = true);
-    }
-
+    this.todosListService.checkedAllTodo();
     this.showedTodosWithFilter();
   }
 
@@ -125,7 +99,7 @@ export class TodoAppComponent implements OnInit, OnDestroy {
    * @param id идентификатор todo
    */
   removeTodo(id: number): void {
-    this.todos = this.todos.filter((todo: Todo): boolean => todo.id !== id);
+    this.todosListService.removeTodo(id);
     this.showedTodosWithFilter();
   }
 
@@ -133,20 +107,15 @@ export class TodoAppComponent implements OnInit, OnDestroy {
    * Убирает из списка завершенные todo
    */
   clearedCompleted() {
-    this.todos = this.todos.filter((todo: Todo): boolean => !todo.status);
+    this.todosListService.clearedCompleted();
     this.showedTodosWithFilter();
   }
 
   /**
    * Редактироует todo
    */
-  editTodo(event: {title:string,id:number}) {
-    this.todos.find((todo: Todo): void => {
-      if (Number(todo.id) === Number(event.id)) {
-        todo.title = event.title;
-      }
-    });
-
+  editTodo(event: Todo) {
+    this.todosListService.editTodo(event);
     this.showedTodosWithFilter();
   }
 
