@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {TodoType} from "../types/todo.type";
+import {Todo} from "../types/todo";
 
 enum ServiceNamesEnum {
   todosList = 'todosList'
@@ -13,7 +13,7 @@ export class TodoListService {
   /**
    * Запрашивает список todo
    */
-  getTodosList(): TodoType[] | [] {
+  getTodosList(): Todo[] | [] {
     return JSON.parse(window.localStorage.getItem(ServiceNamesEnum.todosList) || '[]');
   }
 
@@ -21,7 +21,7 @@ export class TodoListService {
    * Отправляем новый отредактированный список
    * @param todos список
    */
-  setTodosList(todos: TodoType[]): void {
+  setTodosList(todos: Todo[]): void {
     window.localStorage.setItem(ServiceNamesEnum.todosList, JSON.stringify(todos));
   }
 }

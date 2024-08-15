@@ -1,5 +1,5 @@
 import {Component, ElementRef, EventEmitter, HostListener, Input, Output} from '@angular/core';
-import {TodoType} from "../../types/todo.type";
+import {Todo} from "../../types/todo";
 
 @Component({
   selector: 'app-todo-list-item',
@@ -7,12 +7,12 @@ import {TodoType} from "../../types/todo.type";
   styleUrls: ['./todo-list-item.component.scss']
 })
 export class TodoListItemComponent {
-  @Input() todo: TodoType = {} as TodoType;
+  @Input() todo: Todo = {} as Todo;
   @Output() checkedTodoEvent = new EventEmitter<number>();
   @Output() removeTodoEvent = new EventEmitter<number>();
   todoText: string = '';
   isEdit: boolean = false;
-  @Output() editedTodoEvent = new EventEmitter<TodoType>();
+  @Output() editedTodoEvent = new EventEmitter<Todo>();
 
   constructor(private elementRef: ElementRef) {
   }
