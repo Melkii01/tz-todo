@@ -1,5 +1,5 @@
 import {Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output} from '@angular/core';
-import {Subject, Subscription, takeUntil} from "rxjs";
+import {Subject, takeUntil, tap} from "rxjs";
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {FilterNames} from "../../types/filter-names";
 
@@ -15,8 +15,8 @@ export class TodoFooterComponent implements OnInit, OnDestroy {
   public filterParam: string = '';
   protected readonly FilterNames = FilterNames;
 
-  private activatedRoute = inject(ActivatedRoute);
   private destroy$ = new Subject<void>();
+  activatedRoute = inject(ActivatedRoute);
 
   constructor(private router: Router) {
   }
@@ -27,16 +27,17 @@ export class TodoFooterComponent implements OnInit, OnDestroy {
 
   init(): void {
     this.activatedRoute.queryParams.pipe(
+      tap((params: Params) => {
+        if (params[FilterNames.filter] === FilterNames.all) {
+          this.filterParam = FilterNames.all;
+        } else if (params[FilterNames.filter] === FilterNames.active) {
+          this.filterParam = FilterNames.active;
+        } else if (params[FilterNames.filter] === FilterNames.completed) {
+          this.filterParam = FilterNames.completed;
+        }
+      }),
       takeUntil(this.destroy$)
-    ).subscribe((params: Params) => {
-      if (params[FilterNames.filter] === FilterNames.all) {
-        this.filterParam = FilterNames.all;
-      } else if (params[FilterNames.filter] === FilterNames.active) {
-        this.filterParam = FilterNames.active;
-      } else if (params[FilterNames.filter] === FilterNames.completed) {
-        this.filterParam = FilterNames.completed;
-      }
-    });
+    ).subscribe();
   }
 
   /**
@@ -62,5 +63,4 @@ export class TodoFooterComponent implements OnInit, OnDestroy {
     this.destroy$.next();
     this.destroy$.complete();
   }
-
 }

@@ -1,8 +1,8 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, inject, OnDestroy, OnInit} from '@angular/core';
 import {Todo} from "../../shared/types/todo";
 import {TodoListService} from "../../shared/services/todo-list.service";
 import {ActivatedRoute, Params} from "@angular/router";
-import {Subscription, tap} from "rxjs";
+import {Subject, Subscription, takeUntil, tap} from "rxjs";
 import {FilterNames} from "../../shared/types/filter-names";
 
 @Component({
@@ -18,8 +18,11 @@ export class TodoAppComponent implements OnInit, OnDestroy {
   countLeft: number = 0;
   checkedAtLeastOne: boolean = false;
 
-  constructor(private todosListService: TodoListService,
-              private activatedRoute: ActivatedRoute) {
+  private destroy$ = new Subject<void>();
+  private activatedRoute = inject(ActivatedRoute);
+  private todosListService = inject(TodoListService);
+
+  constructor() {
   }
 
   ngOnInit() {
@@ -28,9 +31,11 @@ export class TodoAppComponent implements OnInit, OnDestroy {
     this.showedTodos = this.todosListService.getShowedTodosList();
 
     // Следим за показываемыми todo
-    this.subs.add(this.todosListService.showedTodos$.subscribe((todos: Todo[]) => {
-      this.showedTodos = todos;
-    }));
+    this.todosListService.showedTodos$.pipe(
+      tap((todos: Todo[]) => {
+        this.showedTodos = todos;
+      }),
+      takeUntil(this.destroy$)).subscribe();
     this.getTodoList();
   }
 
@@ -38,12 +43,13 @@ export class TodoAppComponent implements OnInit, OnDestroy {
    * // Запрашиваем query параметры согласно значению фильтра
    */
   getTodoList(): void {
-    this.subs.add(this.activatedRoute.queryParams.pipe(
+    this.activatedRoute.queryParams.pipe(
       tap(((params: Params) => {
           this.activeQueryParams.filter = params[FilterNames.filter];
           this.showedTodosWithFilter();
         }),
-      )).subscribe())
+      ),
+      takeUntil(this.destroy$)).subscribe()
   }
 
   /**
@@ -120,6 +126,7 @@ export class TodoAppComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subs.unsubscribe();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
