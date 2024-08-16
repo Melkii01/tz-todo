@@ -33,7 +33,7 @@ export class TodoListService {
    * Возвращает показываемый список todo
    */
   getShowedTodosList() {
-    return this.showedTodos;
+    return this.showedTodos$;
   }
 
   /**

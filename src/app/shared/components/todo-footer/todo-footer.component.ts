@@ -1,5 +1,5 @@
 import {Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output} from '@angular/core';
-import {Subject, takeUntil, tap} from "rxjs";
+import {Subject, switchMap, takeUntil, tap} from "rxjs";
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {FilterNames} from "../../types/filter-names";
 
@@ -28,14 +28,21 @@ export class TodoFooterComponent implements OnInit, OnDestroy {
   init(): void {
     this.activatedRoute.queryParams.pipe(
       tap((params: Params) => {
-        if (params[FilterNames.filter] === FilterNames.all) {
-          this.filterParam = FilterNames.all;
-        } else if (params[FilterNames.filter] === FilterNames.active) {
-          this.filterParam = FilterNames.active;
-        } else if (params[FilterNames.filter] === FilterNames.completed) {
-          this.filterParam = FilterNames.completed;
+        switch (params[FilterNames.filter]) {
+          case FilterNames.all:
+            this.filterParam = FilterNames.all;
+            break;
+
+          case FilterNames.active:
+            this.filterParam = FilterNames.active;
+            break;
+
+          case FilterNames.completed:
+            this.filterParam = FilterNames.completed;
+            break;
         }
       }),
+
       takeUntil(this.destroy$)
     ).subscribe();
   }

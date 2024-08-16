@@ -12,7 +12,7 @@ import {FilterNames} from "../../shared/types/filter-names";
 })
 export class TodoAppComponent implements OnInit, OnDestroy {
   todos: Todo[] = [];
-  showedTodos: Todo[] = [];
+  // showedTodos: Todo[] = [];
   activeQueryParams: { filter: string } = {filter: ''};
   private subs: Subscription = new Subscription();
   countLeft: number = 0;
@@ -22,20 +22,22 @@ export class TodoAppComponent implements OnInit, OnDestroy {
   private activatedRoute = inject(ActivatedRoute);
   private todosListService = inject(TodoListService);
 
+  showedTodos$= new Subject<Todo[]>();
+
   constructor() {
   }
 
   ngOnInit() {
     // Запрашиваем значения списка и показываемого списка todo
     this.todos = this.todosListService.getTodosList();
-    this.showedTodos = this.todosListService.getShowedTodosList();
+    this.showedTodos$ = this.todosListService.getShowedTodosList();
 
     // Следим за показываемыми todo
-    this.todosListService.showedTodos$.pipe(
-      tap((todos: Todo[]) => {
-        this.showedTodos = todos;
-      }),
-      takeUntil(this.destroy$)).subscribe();
+    // this.todosListService.showedTodos$.pipe(
+    //   tap((todos: Todo[]) => {
+    //     this.showedTodos = todos;
+    //   }),
+    //   takeUntil(this.destroy$)).subscribe();
     this.getTodoList();
   }
 

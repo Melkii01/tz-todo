@@ -7,10 +7,10 @@ import {Todo} from "../../types/todo";
   styleUrls: ['./todo-list.component.scss']
 })
 export class TodoListComponent {
-  @Input() todos: Todo[] = [];
+  @Input() todos: Todo[] | null = [];
   @Output() checkedTodoEvent = new EventEmitter<number>();
   @Output() removeTodoEvent = new EventEmitter<number>();
-  @Input() countAll:number = 0;
+  @Input() countAll: number = 0;
   @Output() checkedAllTodoEvent = new EventEmitter<string>();
   @Output() editedTodoEvent = new EventEmitter<Todo>();
 
