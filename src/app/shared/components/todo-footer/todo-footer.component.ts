@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
-import {Subject, takeUntil, tap} from "rxjs";
+import {BehaviorSubject, Subject, takeUntil, tap} from "rxjs";
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {FilterNames} from "../../types/filter-names";
 
@@ -9,15 +9,15 @@ import {FilterNames} from "../../types/filter-names";
   styleUrls: ['./todo-footer.component.scss']
 })
 export class TodoFooterComponent implements OnInit, OnDestroy {
-  @Input() count: number = 0;
+  @Input() count: number | null = 0;
   @Output() clearedCompletedEvent = new EventEmitter<string>();
-  @Input() checkedSomeOne: boolean = false;
-  public filterParam: string = '';
+  @Input() checkedSomeOne: boolean | null = false;
+  filterParam$: BehaviorSubject<string> = new BehaviorSubject<string>('');
   protected readonly FilterNames = FilterNames;
-
   private destroy$ = new Subject<void>()
 
-  constructor(private router: Router, private activatedRoute: ActivatedRoute) {
+  constructor(private router: Router,
+              private activatedRoute: ActivatedRoute) {
   }
 
   ngOnInit(): void {
@@ -29,15 +29,15 @@ export class TodoFooterComponent implements OnInit, OnDestroy {
       tap((params: Params) => {
         switch (params[FilterNames.filter]) {
           case FilterNames.all:
-            this.filterParam = FilterNames.all;
+            this.filterParam$.next(FilterNames.all);
             break;
 
           case FilterNames.active:
-            this.filterParam = FilterNames.active;
+            this.filterParam$.next(FilterNames.active);
             break;
 
           case FilterNames.completed:
-            this.filterParam = FilterNames.completed;
+            this.filterParam$.next(FilterNames.completed);
             break;
         }
       }),

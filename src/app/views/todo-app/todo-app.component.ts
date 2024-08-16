@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Todo} from "../../shared/types/todo";
 import {TodoListService} from "../../shared/services/todo-list.service";
 import {ActivatedRoute, Params} from "@angular/router";
-import {Subject, takeUntil, tap} from "rxjs";
+import {BehaviorSubject, Subject, takeUntil, tap} from "rxjs";
 import {FilterNames} from "../../shared/types/filter-names";
 
 @Component({
@@ -11,11 +11,10 @@ import {FilterNames} from "../../shared/types/filter-names";
   styleUrls: ['./todo-app.component.scss']
 })
 export class TodoAppComponent implements OnInit, OnDestroy {
-  todos: Todo[] = [];
-  // showedTodos: Todo[] = [];
-  activeQueryParams: { filter: string } = {filter: ''};
-  countLeft: number = 0;
-  checkedAtLeastOne: boolean = false;
+  todos$ = new Subject<Todo[]>();
+  private activeQueryParams: { filter: string } = {filter: ''};
+  countLeft$ = new BehaviorSubject<number>(0);
+  checkedAtLeastOne$ = new BehaviorSubject<boolean>(false);
   private destroy$ = new Subject<void>();
   showedTodos$ = new Subject<Todo[]>();
 
@@ -25,8 +24,9 @@ export class TodoAppComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     // Запрашиваем значения списка и показываемого списка todo
-    this.todos = this.todosListService.getTodosList();
-    this.showedTodos$= this.todosListService.getShowedTodosList();
+    // this.todos = this.todosListService.getTodosList();
+    this.todos$ = this.todosListService.todos$;
+    this.showedTodos$ = this.todosListService.showedTodos$;
 
     this.getTodoList();
   }
@@ -60,8 +60,8 @@ export class TodoAppComponent implements OnInit, OnDestroy {
         checked = true;
       }
     });
-    this.countLeft = quantity;
-    this.checkedAtLeastOne = checked;
+    this.countLeft$.next(quantity);
+    this.checkedAtLeastOne$.next(checked);
   }
 
   /**

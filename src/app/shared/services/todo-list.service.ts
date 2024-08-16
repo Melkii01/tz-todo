@@ -2,22 +2,22 @@ import {Injectable} from '@angular/core';
 import {Todo} from "../types/todo";
 import {ReplaySubject} from "rxjs";
 import {FilterNames} from "../types/filter-names";
+import {ServiceNames} from "../types/service-names";
 
-enum ServiceNamesEnum {
-  todosList = 'todosList'
-}
 
 @Injectable({
   providedIn: 'root'
 })
 export class TodoListService {
-  todos: Todo[] = [];
-  showedTodos: Todo[] = [];
+  private todos: Todo[] = [];
+  todos$: ReplaySubject<Todo[]> = new ReplaySubject<Todo[]>();
+  private showedTodos: Todo[] = [];
   showedTodos$: ReplaySubject<Todo[]> = new ReplaySubject<Todo[]>();
 
   constructor() {
     // Получаем ранние todo
-    this.todos = JSON.parse(window.localStorage.getItem(ServiceNamesEnum.todosList) || '[]');
+    this.todos = JSON.parse(window.localStorage.getItem(ServiceNames.todosList) || '[]');
+    this.todos$.next(this.todos);
     this.showedTodos = this.todos;
     this.showedTodos$.next(this.todos);
   }
@@ -27,13 +27,6 @@ export class TodoListService {
    */
   getTodosList() {
     return this.todos;
-  }
-
-  /**
-   * Возвращает показываемый список todo
-   */
-  getShowedTodosList() {
-    return this.showedTodos$;
   }
 
   /**
@@ -130,7 +123,7 @@ export class TodoListService {
    * Отправляем новый отредактированный список
    */
   setTodosList(): void {
-    window.localStorage.setItem(ServiceNamesEnum.todosList, JSON.stringify(this.todos));
+    window.localStorage.setItem(ServiceNames.todosList, JSON.stringify(this.todos));
     this.showedTodos = this.todos;
     this.showedTodos$.next(this.showedTodos);
   }

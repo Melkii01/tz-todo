@@ -3,17 +3,17 @@
 
   <div class="status">
     <div class="status-item selected"
-         [class.selected]="filterParam === FilterNames.all || filterParam ===''"
+         [class.selected]="(filterParam$ | async) === FilterNames.all || (filterParam$ | async) ===''"
          (click)="choosingFilterParam(FilterNames.all)">All
     </div>
 
     <div class="status-item"
-         [class.selected]="filterParam === FilterNames.active"
+         [class.selected]="(filterParam$ | async) === FilterNames.active"
          (click)="choosingFilterParam(FilterNames.active)">Active
     </div>
 
     <div class="status-item"
-         [class.selected]="filterParam === FilterNames.completed"
+         [class.selected]="(filterParam$ | async) === FilterNames.completed"
          (click)="choosingFilterParam(FilterNames.completed)">Completed
     </div>
   </div>

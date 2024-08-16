@@ -3,15 +3,15 @@
     <h1>Todos</h1>
     <app-todo-header (inputEvent)="addTodo($event)"></app-todo-header>
 
-    <app-todo-list [todos]="showedTodos$ | async" [countAll]="todos.length"
+    <app-todo-list [todos]="showedTodos$ | async" [countAll]="(todos$ | async)?.length"
                    (checkedTodoEvent)="toggleCheckedTodo($event)"
                    (checkedAllTodoEvent)="checkedAllTodo()"
                    (editedTodoEvent)="editTodo($event)"
                    (removeTodoEvent)="removeTodo($event)"></app-todo-list>
 
-    <app-todo-footer *ngIf="todos.length!==0"
-                     [count]="countLeft"
-                     [checkedSomeOne]="checkedAtLeastOne"
+    <app-todo-footer *ngIf="(todos$ | async)?.length !==  0"
+                     [count]="countLeft$ | async"
+                     [checkedSomeOne]="checkedAtLeastOne$ | async"
                      (clearedCompletedEvent)="clearedCompleted()"></app-todo-footer>
   </section>
 
