@@ -1,5 +1,5 @@
-import {Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output} from '@angular/core';
-import {Subject, switchMap, takeUntil, tap} from "rxjs";
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {Subject, takeUntil, tap} from "rxjs";
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {FilterNames} from "../../types/filter-names";
 
@@ -15,10 +15,9 @@ export class TodoFooterComponent implements OnInit, OnDestroy {
   public filterParam: string = '';
   protected readonly FilterNames = FilterNames;
 
-  private destroy$ = new Subject<void>();
-  activatedRoute = inject(ActivatedRoute);
+  private destroy$ = new Subject<void>()
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private activatedRoute: ActivatedRoute) {
   }
 
   ngOnInit(): void {

@@ -7,7 +7,7 @@ import {Todo} from "../../types/todo";
   styleUrls: ['./todo-list-item.component.scss']
 })
 export class TodoListItemComponent {
-  @Input() todo: Todo = {} as Todo;
+  @Input() todo: Todo | undefined = undefined;
   @Output() checkedTodoEvent = new EventEmitter<number>();
   @Output() removeTodoEvent = new EventEmitter<number>();
   todoText: string = '';
@@ -21,30 +21,38 @@ export class TodoListItemComponent {
    * Отправляет действие клика на чекбокс родителю
    */
   toggleChecked(): void {
-    this.checkedTodoEvent.emit(this.todo.id);
+    if (this.todo && this.todo.id) {
+      this.checkedTodoEvent.emit(this.todo.id);
+    }
   }
 
   /**
    * Отправляет действие клика на удаление todo родителю
    */
   removeTodo(): void {
-    this.removeTodoEvent.emit(this.todo.id);
+    if (this.todo && this.todo.id) {
+      this.removeTodoEvent.emit(this.todo.id);
+    }
   }
 
   /**
    * Открывает редактор todo
    */
   openEdit(): void {
-    this.todoText = this.todo.title;
-    this.isEdit = true;
+    if (this.todo && this.todo.title) {
+      this.todoText = this.todo.title;
+      this.isEdit = true;
+    }
   }
 
   /**
    * Закрывает редактор todo и отправляет новые значения todo родителю
    */
   closeEdit(): void {
-    this.editedTodoEvent.emit({title: this.todoText, id: this.todo.id, status: this.todo.status});
-    this.isEdit = false;
+    if (this.todo && this.todo.id) {
+      this.editedTodoEvent.emit({title: this.todoText, id: this.todo.id, status: this.todo.status});
+      this.isEdit = false;
+    }
   }
 
   /**

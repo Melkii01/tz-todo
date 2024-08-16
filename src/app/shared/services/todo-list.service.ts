@@ -1,6 +1,6 @@
-import {Injectable, OnInit} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Todo} from "../types/todo";
-import {Subject} from "rxjs";
+import {ReplaySubject} from "rxjs";
 import {FilterNames} from "../types/filter-names";
 
 enum ServiceNamesEnum {
@@ -13,7 +13,7 @@ enum ServiceNamesEnum {
 export class TodoListService {
   todos: Todo[] = [];
   showedTodos: Todo[] = [];
-  showedTodos$: Subject<Todo[]> = new Subject<Todo[]>();
+  showedTodos$: ReplaySubject<Todo[]> = new ReplaySubject<Todo[]>();
 
   constructor() {
     // Получаем ранние todo

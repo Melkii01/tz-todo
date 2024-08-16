@@ -1,8 +1,8 @@
-import {Component, inject, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Todo} from "../../shared/types/todo";
 import {TodoListService} from "../../shared/services/todo-list.service";
 import {ActivatedRoute, Params} from "@angular/router";
-import {Subject, Subscription, takeUntil, tap} from "rxjs";
+import {Subject, takeUntil, tap} from "rxjs";
 import {FilterNames} from "../../shared/types/filter-names";
 
 @Component({
@@ -14,30 +14,20 @@ export class TodoAppComponent implements OnInit, OnDestroy {
   todos: Todo[] = [];
   // showedTodos: Todo[] = [];
   activeQueryParams: { filter: string } = {filter: ''};
-  private subs: Subscription = new Subscription();
   countLeft: number = 0;
   checkedAtLeastOne: boolean = false;
-
   private destroy$ = new Subject<void>();
-  private activatedRoute = inject(ActivatedRoute);
-  private todosListService = inject(TodoListService);
+  showedTodos$ = new Subject<Todo[]>();
 
-  showedTodos$= new Subject<Todo[]>();
-
-  constructor() {
+  constructor(private activatedRoute: ActivatedRoute,
+              private todosListService: TodoListService) {
   }
 
   ngOnInit() {
     // Запрашиваем значения списка и показываемого списка todo
     this.todos = this.todosListService.getTodosList();
-    this.showedTodos$ = this.todosListService.getShowedTodosList();
+    this.showedTodos$= this.todosListService.getShowedTodosList();
 
-    // Следим за показываемыми todo
-    // this.todosListService.showedTodos$.pipe(
-    //   tap((todos: Todo[]) => {
-    //     this.showedTodos = todos;
-    //   }),
-    //   takeUntil(this.destroy$)).subscribe();
     this.getTodoList();
   }
 

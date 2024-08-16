@@ -1,11 +1,11 @@
 <li>
   <input type="checkbox"
-         [checked]="todo.status"
-         id="{{ todo.id }}"
+         [checked]="todo?.status"
+         id="{{ todo?.id }}"
          (change)="toggleChecked()">
 
-  <label [class.checked]="todo.status"
-         (dblclick)="openEdit()">{{ todo.title }}</label>
+  <label [class.checked]="todo?.status"
+         (dblclick)="openEdit()">{{ todo?.title }}</label>
 
   <button class="destroy" (click)="removeTodo()"></button>
 
@@ -13,6 +13,6 @@
          [(ngModel)]="todoText"
          *ngIf="isEdit"
          (keyup.enter)="closeEdit()"
-         id="{{ todo.id }}">
+         id="{{ todo?.id }}">
 </li>
 
