@@ -8,10 +8,10 @@ import {Todo} from "../../types/todo";
 })
 export class TodoListItemComponent {
   @Input() todo: Todo | undefined = undefined;
-  @Output() checkedTodoEvent = new EventEmitter<number>();
-  @Output() removeTodoEvent = new EventEmitter<number>();
   todoText: string = '';
   isEdit: boolean = false;
+  @Output() checkedTodoEvent = new EventEmitter<number>();
+  @Output() removeTodoEvent = new EventEmitter<number>();
   @Output() editedTodoEvent = new EventEmitter<Todo>();
 
   constructor(private elementRef: ElementRef) {

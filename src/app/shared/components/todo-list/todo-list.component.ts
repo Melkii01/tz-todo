@@ -8,9 +8,9 @@ import {Todo} from "../../types/todo";
 })
 export class TodoListComponent {
   @Input() todos: Todo[] | null = [];
+  @Input() countAll: number | undefined = 0;
   @Output() checkedTodoEvent = new EventEmitter<number>();
   @Output() removeTodoEvent = new EventEmitter<number>();
-  @Input() countAll: number | undefined = 0;
   @Output() checkedAllTodoEvent = new EventEmitter<string>();
   @Output() editedTodoEvent = new EventEmitter<Todo>();
 

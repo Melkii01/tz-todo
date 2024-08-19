@@ -10,8 +10,8 @@ import {FilterNames} from "../../types/filter-names";
 })
 export class TodoFooterComponent implements OnInit, OnDestroy {
   @Input() count: number | null = 0;
+  @Input() checkedAtLeastOne: boolean | null = false;
   @Output() clearedCompletedEvent = new EventEmitter<string>();
-  @Input() checkedSomeOne: boolean | null = false;
   filterParam$: BehaviorSubject<string> = new BehaviorSubject<string>('');
   protected readonly FilterNames = FilterNames;
   private destroy$ = new Subject<void>()

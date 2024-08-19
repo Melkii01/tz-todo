@@ -3,7 +3,8 @@
     <h1>Todos</h1>
     <app-todo-header (inputEvent)="addTodo($event)"></app-todo-header>
 
-    <app-todo-list [todos]="showedTodos$ | async" [countAll]="(todos$ | async)?.length"
+    <app-todo-list [todos]="showedTodos$ | async"
+                   [countAll]="(todos$ | async)?.length"
                    (checkedTodoEvent)="toggleCheckedTodo($event)"
                    (checkedAllTodoEvent)="checkedAllTodo()"
                    (editedTodoEvent)="editTodo($event)"
@@ -11,7 +12,7 @@
 
     <app-todo-footer *ngIf="(todos$ | async)?.length !==  0"
                      [count]="countLeft$ | async"
-                     [checkedSomeOne]="checkedAtLeastOne$ | async"
+                     [checkedAtLeastOne]="checkedAtLeastOne$ | async"
                      (clearedCompletedEvent)="clearedCompleted()"></app-todo-footer>
   </section>
 

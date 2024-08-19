@@ -11,23 +11,23 @@ import {FilterNames} from "../../shared/types/filter-names";
   styleUrls: ['./todo-app.component.scss']
 })
 export class TodoAppComponent implements OnInit, OnDestroy {
-  todos$ = new Subject<Todo[]>();
+  todos$ = this.todosListService.todos$;
+  showedTodos$ = this.todosListService.showedTodos$;
   private activeQueryParams: { filter: string } = {filter: ''};
   countLeft$ = new BehaviorSubject<number>(0);
   checkedAtLeastOne$ = new BehaviorSubject<boolean>(false);
   private destroy$ = new Subject<void>();
-  showedTodos$ = new Subject<Todo[]>();
 
   constructor(private activatedRoute: ActivatedRoute,
               private todosListService: TodoListService) {
   }
 
   ngOnInit() {
-    // Запрашиваем значения списка и показываемого списка todo
     // this.todos = this.todosListService.getTodosList();
-    this.todos$ = this.todosListService.todos$;
-    this.showedTodos$ = this.todosListService.showedTodos$;
+    // this.todos$ = this.todosListService.todos$;
+    // this.showedTodos$ = this.todosListService.showedTodos$;
 
+    // Показываем список показываемого todo
     this.getTodoList();
   }
 
@@ -53,13 +53,26 @@ export class TodoAppComponent implements OnInit, OnDestroy {
     // Читаем количество незавершенных todo и ищем хотя бы один статус true
     let quantity: number = 0;
     let checked: boolean = false;
-    this.todosListService.getTodosList().forEach((todo) => {
-      if (!todo.status) {
-        quantity++;
-      } else if (todo.status) {
-        checked = true;
-      }
-    });
+    // this.todosListService.getTodosList().forEach((todo) => {
+    //   if (!todo.status) {
+    //     quantity++;
+    //   } else if (todo.status) {
+    //     checked = true;
+    //   }
+    // });
+    this.todos$.pipe(
+      tap((todos: Todo[]) => {
+        todos.forEach(todo => {
+          if (!todo.status) {
+                quantity++;
+              } else if (todo.status) {
+                checked = true;
+              }
+        })
+      }),
+      takeUntil(this.destroy$)
+    ).subscribe();
+
     this.countLeft$.next(quantity);
     this.checkedAtLeastOne$.next(checked);
   }
