@@ -1,91 +1,116 @@
 import {Injectable} from '@angular/core';
 import {Todo} from "../types/todo";
-import {ReplaySubject} from "rxjs";
+import {BehaviorSubject} from "rxjs";
 import {FilterNames} from "../types/filter-names";
 import {ServiceNames} from "../types/service-names";
-
 
 @Injectable({
   providedIn: 'root'
 })
 export class TodoListService {
-  private todos: Todo[] = [];
-  todos$: ReplaySubject<Todo[]> = new ReplaySubject<Todo[]>();
-  private showedTodos: Todo[] = [];
-  showedTodos$: ReplaySubject<Todo[]> = new ReplaySubject<Todo[]>();
+  todos$: BehaviorSubject<Todo[]> = new BehaviorSubject<Todo[]>(JSON.parse(window.localStorage.getItem(ServiceNames.todosList) || '[]'));
+  showedTodos$: BehaviorSubject<Todo[]> = new BehaviorSubject<Todo[]>(JSON.parse(window.localStorage.getItem(ServiceNames.todosList) || '[]'));
 
-  constructor() {
-    // Получаем ранние todo
-    this.todos = JSON.parse(window.localStorage.getItem(ServiceNames.todosList) || '[]');
-    this.todos$.next(this.todos);
-    this.showedTodos = this.todos;
-    this.showedTodos$.next(this.todos);
-  }
+  countLeft$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+  checkedAtLeastOne$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   /**
-   * Возвращает список todo
+   * Показывает отфильтрованный показываемый список todo
+   * @param filterParam параметр фильтрации из url
    */
-  getTodosList() {
-    return this.todos;
-  }
-
-  /**
-   * Показывает отфильтрованный список todo
-   * @param filter параметр фильтрации из url
-   */
-  showedTodosWithFilter(filter: string) {
-    if (filter === FilterNames.active) {
-      this.showedTodos = this.todos.filter((todo: Todo) => !todo.status);
-    } else if (filter === FilterNames.completed) {
-      this.showedTodos = this.todos.filter((todo: Todo) => todo.status);
+  showedTodosWithFilter(filterParam: string): void {
+    if (filterParam === FilterNames.active) {
+      this.showedTodos$.next(this.todos$.getValue().filter((todo: Todo) => !todo.status))
+    } else if (filterParam === FilterNames.completed) {
+      this.showedTodos$.next(this.todos$.getValue().filter((todo: Todo) => todo.status));
     } else {
-      this.showedTodos = this.todos;
+      this.showedTodos$.next(this.todos$.getValue());
     }
 
-    this.showedTodos$.next(this.showedTodos);
+    console.log(this.todos$, 'Подписки не должны увеличиваться');
+    console.log(this.showedTodos$, 'Подписки не должны увеличиваться');
+    console.log(this.countLeft$, 'Подписки не должны увеличиваться');
+    console.log(this.checkedAtLeastOne$, 'Подписки не должны увеличиваться');
   }
 
   /**
-   * Добавляет новый todo в список
+   * Показывает количество незавершенных todo и показывает хотя бы один завершенный todo
+   */
+  completedCheckListCount(): void {
+    let quantity: number = 0;
+    let checked: boolean = false;
+
+    this.todos$.getValue().forEach((todo: Todo): void => {
+      if (!todo.status) {
+        quantity++;
+      } else if (todo.status) {
+        checked = true;
+      }
+    });
+
+    this.countLeft$.next(quantity);
+    this.checkedAtLeastOne$.next(checked);
+  }
+
+  /**
+   * Отправляет новый отредактированный список на сервер и на подписки
+   */
+  setNewTodosList(newTodos: Todo[]): void {
+    window.localStorage.setItem(ServiceNames.todosList, JSON.stringify(newTodos));
+    this.todos$.next(newTodos);
+    this.showedTodos$.next(newTodos);
+  }
+
+  /**
+   * Добавляет новый todo в список todo
    * @param newTodoName название новой todo
    */
-  addTodo(newTodoName: string) {
-    let lastId: number = this.todos[this.todos.length - 1]?.id;
-    this.todos.push({title: newTodoName, status: false, id: lastId ? lastId + 1 : 1});
-
-    this.setTodosList();
+  addTodo(newTodoName: string): void {
+    const oldTodos: Todo[] = this.todos$.getValue();
+    const lastId: number | undefined = oldTodos[oldTodos.length - 1]?.id;
+    this.setNewTodosList([...oldTodos, {
+      title: newTodoName,
+      status: false,
+      id: lastId ? lastId + 1 : 1
+    }]);
   }
 
   /**
-   * Отмечает о выполненности todo или убирает метку
+   * Отмечает о выполненности todo или убирает отметку
    * @param id идентификатор todo
    */
   toggleCheckedTodo(id: number): void {
-    this.todos.find((todo: Todo): void => {
+    const todos: Todo[] = this.todos$.getValue();
+
+    todos.find((todo: Todo): void => {
       if (Number(todo.id) === Number(id)) {
         todo.status = !todo.status;
       }
     });
 
-    this.setTodosList();
+    this.setNewTodosList(todos);
   }
 
   /**
-   * Отмечает выполненными все todo или убирает метки
+   * Отмечает выполненными все todo или убирает у всех отметки
    */
   checkedAllTodo() {
-    if (this.todos.some((todo: Todo) => !todo.status)) {
-      // Если не выделена хоть одна, выделяем все
-      this.todos.map((todo: Todo) => todo.status = true);
-    } else if (this.todos.every((todo: Todo) => todo.status)) {
+    let todos: Todo[] = this.todos$.getValue();
+
+    // Если не выделена хоть одна, выделяем все
+    if (todos.some((todo: Todo) => !todo.status)) {
+      todos.map((todo: Todo): boolean => todo.status = true);
+
       // Если выделены все, убираем отметки
-      this.todos.map((todo: Todo) => todo.status = false);
-    } else if (this.todos.every((todo: Todo) => !todo.status)) {
+    } else if (todos.every((todo: Todo) => todo.status)) {
+      todos.map((todo: Todo): boolean => todo.status = false);
+
       // Если нет отметок, выделяем все
-      this.todos.map((todo: Todo) => todo.status = true);
+    } else if (todos.every((todo: Todo) => !todo.status)) {
+      todos.map((todo: Todo): boolean => todo.status = true);
     }
 
-    this.setTodosList();
+    this.setNewTodosList(todos);
   }
 
 
@@ -94,37 +119,32 @@ export class TodoListService {
    * @param id идентификатор todo
    */
   removeTodo(id: number): void {
-    this.todos = this.todos.filter((todo: Todo): boolean => todo.id !== id);
-    this.setTodosList();
+    const todos: Todo[] = this.todos$.getValue().filter((todo: Todo): boolean => Number(todo.id) !== Number(id));
+
+    this.setNewTodosList(todos);
   }
 
   /**
    * Убирает из списка завершенные todo
    */
-  clearedCompleted() {
-    this.todos = this.todos.filter((todo: Todo): boolean => !todo.status);
-    this.setTodosList();
+  clearedCompleted(): void {
+    const todos: Todo[] = this.todos$.getValue().filter((todo: Todo): boolean => !todo.status);
+
+    this.setNewTodosList(todos);
   }
 
   /**
    * Редактироует todo
    */
-  editTodo(event: Todo) {
-    this.todos.find((todo: Todo): void => {
+  editTodo(event: Todo): void {
+    const todos: Todo[] = this.todos$.getValue();
+
+    todos.find((todo: Todo): void => {
       if (Number(todo.id) === Number(event.id)) {
         todo.title = event.title;
       }
     });
 
-    this.setTodosList();
-  }
-
-  /**
-   * Отправляем новый отредактированный список
-   */
-  setTodosList(): void {
-    window.localStorage.setItem(ServiceNames.todosList, JSON.stringify(this.todos));
-    this.showedTodos = this.todos;
-    this.showedTodos$.next(this.showedTodos);
+    this.setNewTodosList(todos);
   }
 }

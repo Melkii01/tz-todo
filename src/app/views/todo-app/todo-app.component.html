@@ -10,7 +10,7 @@
                    (editedTodoEvent)="editTodo($event)"
                    (removeTodoEvent)="removeTodo($event)"></app-todo-list>
 
-    <app-todo-footer *ngIf="(todos$ | async)?.length !==  0"
+    <app-todo-footer *ngIf="(todos$ | async)?.length !== 0"
                      [count]="countLeft$ | async"
                      [checkedAtLeastOne]="checkedAtLeastOne$ | async"
                      (clearedCompletedEvent)="clearedCompleted()"></app-todo-footer>

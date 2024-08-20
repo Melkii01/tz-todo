@@ -10,9 +10,9 @@ export class TodoListItemComponent {
   @Input() todo: Todo | undefined = undefined;
   todoText: string = '';
   isEdit: boolean = false;
-  @Output() checkedTodoEvent = new EventEmitter<number>();
-  @Output() removeTodoEvent = new EventEmitter<number>();
-  @Output() editedTodoEvent = new EventEmitter<Todo>();
+  @Output() checkedTodoEvent: EventEmitter<number> = new EventEmitter<number>();
+  @Output() removeTodoEvent: EventEmitter<number> = new EventEmitter<number>();
+  @Output() editedTodoEvent: EventEmitter<Todo> = new EventEmitter<Todo>();
 
   constructor(private elementRef: ElementRef) {
   }

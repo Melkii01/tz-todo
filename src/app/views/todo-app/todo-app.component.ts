@@ -11,70 +11,34 @@ import {FilterNames} from "../../shared/types/filter-names";
   styleUrls: ['./todo-app.component.scss']
 })
 export class TodoAppComponent implements OnInit, OnDestroy {
-  todos$ = this.todosListService.todos$;
-  showedTodos$ = this.todosListService.showedTodos$;
+  todos$: BehaviorSubject<Todo[]> = this.todosListService.todos$;
+  showedTodos$: BehaviorSubject<Todo[]> = this.todosListService.showedTodos$;
   private activeQueryParams: { filter: string } = {filter: ''};
-  countLeft$ = new BehaviorSubject<number>(0);
-  checkedAtLeastOne$ = new BehaviorSubject<boolean>(false);
-  private destroy$ = new Subject<void>();
+  countLeft$: BehaviorSubject<number> = this.todosListService.countLeft$;
+  checkedAtLeastOne$: BehaviorSubject<boolean> = this.todosListService.checkedAtLeastOne$;
+  private destroy$: Subject<void> = new Subject<void>();
 
   constructor(private activatedRoute: ActivatedRoute,
               private todosListService: TodoListService) {
   }
 
-  ngOnInit() {
-    // this.todos = this.todosListService.getTodosList();
-    // this.todos$ = this.todosListService.todos$;
-    // this.showedTodos$ = this.todosListService.showedTodos$;
-
-    // Показываем список показываемого todo
-    this.getTodoList();
-  }
-
-  /**
-   * // Запрашиваем query параметры согласно значению фильтра
-   */
-  getTodoList(): void {
+  ngOnInit(): void {
     this.activatedRoute.queryParams.pipe(
       tap(((params: Params) => {
           this.activeQueryParams.filter = params[FilterNames.filter];
           this.showedTodosWithFilter();
         }),
       ),
-      takeUntil(this.destroy$)).subscribe()
+      takeUntil(this.destroy$)).subscribe();
   }
 
   /**
    * Показывает отфильрованный показываемый список todo
+   * Показывает количество незавершенных todo и показывает хотя бы один завершенный todo
    */
-  showedTodosWithFilter() {
+  showedTodosWithFilter(): void {
     this.todosListService.showedTodosWithFilter(this.activeQueryParams.filter);
-
-    // Читаем количество незавершенных todo и ищем хотя бы один статус true
-    let quantity: number = 0;
-    let checked: boolean = false;
-    // this.todosListService.getTodosList().forEach((todo) => {
-    //   if (!todo.status) {
-    //     quantity++;
-    //   } else if (todo.status) {
-    //     checked = true;
-    //   }
-    // });
-    this.todos$.pipe(
-      tap((todos: Todo[]) => {
-        todos.forEach(todo => {
-          if (!todo.status) {
-                quantity++;
-              } else if (todo.status) {
-                checked = true;
-              }
-        })
-      }),
-      takeUntil(this.destroy$)
-    ).subscribe();
-
-    this.countLeft$.next(quantity);
-    this.checkedAtLeastOne$.next(checked);
+    this.todosListService.completedCheckListCount();
   }
 
   /**
@@ -100,7 +64,7 @@ export class TodoAppComponent implements OnInit, OnDestroy {
   /**
    * Отмечает выполненными все todo или убирает метки
    */
-  checkedAllTodo() {
+  checkedAllTodo(): void {
     this.todosListService.checkedAllTodo();
     this.showedTodosWithFilter();
   }
@@ -117,7 +81,7 @@ export class TodoAppComponent implements OnInit, OnDestroy {
   /**
    * Убирает из списка завершенные todo
    */
-  clearedCompleted() {
+  clearedCompleted(): void {
     this.todosListService.clearedCompleted();
     this.showedTodosWithFilter();
   }
@@ -125,7 +89,7 @@ export class TodoAppComponent implements OnInit, OnDestroy {
   /**
    * Редактироует todo
    */
-  editTodo(event: Todo) {
+  editTodo(event: Todo): void {
     this.todosListService.editTodo(event);
     this.showedTodosWithFilter();
   }
