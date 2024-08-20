@@ -98,29 +98,20 @@ export class TodoListService {
   checkedAllTodo(filterParam: string): void {
     let todos: Todo[] = this.todos$.getValue();
 
-    // В активном фильтре отмечаем все
-    if (filterParam === FilterNames.active) {
-      todos.map((todo: Todo): boolean => todo.status = true);
-
-      // В завершенном фильтре убираем отметки
-    } else if (filterParam === FilterNames.completed) {
-      todos.map((todo: Todo): boolean => todo.status = false);
-
+    // В активном фильтре отмечаем все, в завершенном фильтре убираем отметки
+    if (filterParam === FilterNames.active || filterParam === FilterNames.completed) {
+      todos.map((todo: Todo): boolean => todo.status = filterParam === FilterNames.active);
     } else {
+
       // Если не выделена хоть одна, выделяем все
       if (todos.some((todo: Todo) => !todo.status)) {
         todos.map((todo: Todo): boolean => todo.status = true);
 
-        // Если выделены все, убираем отметки
-      } else if (todos.every((todo: Todo) => todo.status)) {
-        todos.map((todo: Todo): boolean => todo.status = false);
-
-        // Если нет отметок, выделяем все
-      } else if (todos.every((todo: Todo) => !todo.status)) {
-        todos.map((todo: Todo): boolean => todo.status = true);
+        // Если выделены все, убираем отметки, если нет отметок, выделяем все
+      } else {
+        todos.map((todo: Todo): boolean => todo.status = todos.every((todo: Todo) => !todo.status));
       }
     }
-
 
     this.setNewTodosList(todos);
   }

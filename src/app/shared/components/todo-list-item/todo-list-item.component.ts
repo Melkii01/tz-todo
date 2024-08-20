@@ -7,7 +7,7 @@ import {Todo} from "../../types/todo";
   styleUrls: ['./todo-list-item.component.scss']
 })
 export class TodoListItemComponent {
-  @Input() todo: Todo | undefined = undefined;
+  @Input() todo?: Todo;
   todoText: string = '';
   isEdit: boolean = false;
   @Output() checkedTodoEvent: EventEmitter<number> = new EventEmitter<number>();
