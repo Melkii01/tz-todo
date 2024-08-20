@@ -93,22 +93,34 @@ export class TodoListService {
 
   /**
    * Отмечает выполненными все todo или убирает у всех отметки
+   * @param filterParam параметр фильтрации из url
    */
-  checkedAllTodo() {
+  checkedAllTodo(filterParam: string): void {
     let todos: Todo[] = this.todos$.getValue();
 
-    // Если не выделена хоть одна, выделяем все
-    if (todos.some((todo: Todo) => !todo.status)) {
+    // В активном фильтре отмечаем все
+    if (filterParam === FilterNames.active) {
       todos.map((todo: Todo): boolean => todo.status = true);
 
-      // Если выделены все, убираем отметки
-    } else if (todos.every((todo: Todo) => todo.status)) {
+      // В завершенном фильтре убираем отметки
+    } else if (filterParam === FilterNames.completed) {
       todos.map((todo: Todo): boolean => todo.status = false);
 
-      // Если нет отметок, выделяем все
-    } else if (todos.every((todo: Todo) => !todo.status)) {
-      todos.map((todo: Todo): boolean => todo.status = true);
+    } else {
+      // Если не выделена хоть одна, выделяем все
+      if (todos.some((todo: Todo) => !todo.status)) {
+        todos.map((todo: Todo): boolean => todo.status = true);
+
+        // Если выделены все, убираем отметки
+      } else if (todos.every((todo: Todo) => todo.status)) {
+        todos.map((todo: Todo): boolean => todo.status = false);
+
+        // Если нет отметок, выделяем все
+      } else if (todos.every((todo: Todo) => !todo.status)) {
+        todos.map((todo: Todo): boolean => todo.status = true);
+      }
     }
+
 
     this.setNewTodosList(todos);
   }
