@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {BehaviorSubject, Subject, takeUntil, tap} from "rxjs";
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {FilterNames} from "../../types/filter-names";
@@ -6,7 +6,8 @@ import {FilterNames} from "../../types/filter-names";
 @Component({
   selector: 'app-todo-footer',
   templateUrl: './todo-footer.component.html',
-  styleUrls: ['./todo-footer.component.scss']
+  styleUrls: ['./todo-footer.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TodoFooterComponent implements OnInit, OnDestroy {
   @Input() count: number | null = 0;

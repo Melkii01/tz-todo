@@ -24,11 +24,6 @@ export class TodoListService {
     } else {
       this.showedTodos$.next(this.todos$.getValue());
     }
-
-    console.log(this.todos$, 'Подписки не должны увеличиваться');
-    console.log(this.showedTodos$, 'Подписки не должны увеличиваться');
-    console.log(this.countLeft$, 'Подписки не должны увеличиваться');
-    console.log(this.checkedAtLeastOne$, 'Подписки не должны увеличиваться');
   }
 
   /**
@@ -52,6 +47,7 @@ export class TodoListService {
 
   /**
    * Отправляет новый отредактированный список на сервер и на подписки
+   * @param newTodos новый список todo
    */
   setNewTodosList(newTodos: Todo[]): void {
     window.localStorage.setItem(ServiceNames.todosList, JSON.stringify(newTodos));

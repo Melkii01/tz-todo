@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnDestroy, OnInit} from '@angular/core';
 import {Todo} from "../../shared/types/todo";
 import {TodoListService} from "../../shared/services/todo-list.service";
 import {ActivatedRoute, Params} from "@angular/router";
@@ -8,7 +8,8 @@ import {FilterNames} from "../../shared/types/filter-names";
 @Component({
   selector: 'app-todo-app',
   templateUrl: './todo-app.component.html',
-  styleUrls: ['./todo-app.component.scss']
+  styleUrls: ['./todo-app.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TodoAppComponent implements OnInit, OnDestroy {
   todos$: BehaviorSubject<Todo[]> = this.todosListService.todos$;
