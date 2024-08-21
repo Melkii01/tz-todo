@@ -19,10 +19,8 @@ export class TodoListService {
    * @param filterParam параметр фильтрации из url
    */
   showedTodosWithFilter(filterParam: string): void {
-    if (filterParam === FilterNames.active) {
-      this.showedTodos$.next(this.todos$.getValue().filter((todo: Todo) => !todo.status))
-    } else if (filterParam === FilterNames.completed) {
-      this.showedTodos$.next(this.todos$.getValue().filter((todo: Todo) => todo.status));
+    if (filterParam === FilterNames.active || filterParam === FilterNames.completed) {
+      this.showedTodos$.next(this.todos$.getValue().filter((todo: Todo): boolean => !todo.status === (filterParam === FilterNames.active)));
     } else {
       this.showedTodos$.next(this.todos$.getValue());
     }
@@ -67,11 +65,10 @@ export class TodoListService {
    */
   addTodo(newTodoName: string): void {
     const oldTodos: Todo[] = this.todos$.getValue();
-    const lastId: number | undefined = oldTodos[oldTodos.length - 1]?.id;
     this.setNewTodosList([...oldTodos, {
       title: newTodoName,
       status: false,
-      id: lastId ? lastId + 1 : 1
+      id: Date.now()
     }]);
   }
 
@@ -83,7 +80,7 @@ export class TodoListService {
     const todos: Todo[] = this.todos$.getValue();
 
     todos.find((todo: Todo): void => {
-      if (Number(todo.id) === Number(id)) {
+      if (todo.id === id) {
         todo.status = !todo.status;
       }
     });
@@ -122,7 +119,7 @@ export class TodoListService {
    * @param id идентификатор todo
    */
   removeTodo(id: number): void {
-    const todos: Todo[] = this.todos$.getValue().filter((todo: Todo): boolean => Number(todo.id) !== Number(id));
+    const todos: Todo[] = this.todos$.getValue().filter((todo: Todo): boolean => todo.id !== id);
 
     this.setNewTodosList(todos);
   }
@@ -143,7 +140,7 @@ export class TodoListService {
     const todos: Todo[] = this.todos$.getValue();
 
     todos.find((todo: Todo): void => {
-      if (Number(todo.id) === Number(event.id)) {
+      if (todo.id === event.id) {
         todo.title = event.title;
       }
     });

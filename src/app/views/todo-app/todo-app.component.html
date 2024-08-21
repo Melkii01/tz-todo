@@ -3,7 +3,7 @@
     <h1>Todos</h1>
     <app-todo-header (inputEvent)="addTodo($event)"></app-todo-header>
 
-    <app-todo-list [todos]="showedTodos$ | async"
+    <app-todo-list [todos]="(showedTodos$ | async) || []"
                    [countAll]="(todos$ | async)?.length"
                    (checkedTodoEvent)="toggleCheckedTodo($event)"
                    (checkedAllTodoEvent)="checkedAllTodo()"
