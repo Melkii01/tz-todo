@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
-import {Subscription} from "rxjs";
+import {BehaviorSubject, Subject, takeUntil, tap} from "rxjs";
 import {ActivatedRoute, Params, Router} from "@angular/router";
-import {FilterNamesEnum} from "../../types/filter-names.enum";
+import {FilterNames} from "../../types/filter-names";
 
 @Component({
   selector: 'app-todo-footer',
@@ -9,15 +9,15 @@ import {FilterNamesEnum} from "../../types/filter-names.enum";
   styleUrls: ['./todo-footer.component.scss']
 })
 export class TodoFooterComponent implements OnInit, OnDestroy {
-  @Input() count: number = 0;
-  @Output() clearedCompletedEvent = new EventEmitter<string>();
-  @Input() checkedSomeOne: boolean = false;
-  private subs: Subscription = new Subscription();
-  public filterParam: string = '';
-  protected readonly FilterNamesEnum = FilterNamesEnum;
+  @Input() count: number | null = 0;
+  @Input() checkedAtLeastOne: boolean | null = false;
+  @Output() clearedCompletedEvent: EventEmitter<string> = new EventEmitter<string>();
+  filterParam$: BehaviorSubject<string> = new BehaviorSubject<string>('');
+  protected readonly FilterNames = FilterNames;
+  private destroy$: Subject<void> = new Subject<void>()
 
-  constructor(private activatedRoute: ActivatedRoute,
-              private router: Router) {
+  constructor(private router: Router,
+              private activatedRoute: ActivatedRoute) {
   }
 
   ngOnInit(): void {
@@ -25,15 +25,25 @@ export class TodoFooterComponent implements OnInit, OnDestroy {
   }
 
   init(): void {
-    this.subs.add(this.activatedRoute.queryParams.subscribe((params: Params) => {
-      if (params[FilterNamesEnum.filter] === FilterNamesEnum.all) {
-        this.filterParam = FilterNamesEnum.all;
-      } else if (params[FilterNamesEnum.filter] === FilterNamesEnum.active) {
-        this.filterParam = FilterNamesEnum.active;
-      } else if (params[FilterNamesEnum.filter] === FilterNamesEnum.completed) {
-        this.filterParam = FilterNamesEnum.completed;
-      }
-    }));
+    this.activatedRoute.queryParams.pipe(
+      tap((params: Params) => {
+        switch (params[FilterNames.filter]) {
+          case FilterNames.all:
+            this.filterParam$.next(FilterNames.all);
+            break;
+
+          case FilterNames.active:
+            this.filterParam$.next(FilterNames.active);
+            break;
+
+          case FilterNames.completed:
+            this.filterParam$.next(FilterNames.completed);
+            break;
+        }
+      }),
+
+      takeUntil(this.destroy$)
+    ).subscribe();
   }
 
   /**
@@ -56,7 +66,7 @@ export class TodoFooterComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subs.unsubscribe();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
-
 }

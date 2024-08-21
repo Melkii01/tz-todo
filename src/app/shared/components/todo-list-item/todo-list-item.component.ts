@@ -1,5 +1,5 @@
 import {Component, ElementRef, EventEmitter, HostListener, Input, Output} from '@angular/core';
-import {TodoType} from "../../types/todo.type";
+import {Todo} from "../../types/todo";
 
 @Component({
   selector: 'app-todo-list-item',
@@ -7,12 +7,12 @@ import {TodoType} from "../../types/todo.type";
   styleUrls: ['./todo-list-item.component.scss']
 })
 export class TodoListItemComponent {
-  @Input() todo: TodoType = {} as TodoType;
-  @Output() checkedTodoEvent = new EventEmitter<number>();
-  @Output() removeTodoEvent = new EventEmitter<number>();
+  @Input() todo?: Todo;
   todoText: string = '';
   isEdit: boolean = false;
-  @Output() editedTodoEvent = new EventEmitter<TodoType>();
+  @Output() checkedTodoEvent: EventEmitter<number> = new EventEmitter<number>();
+  @Output() removeTodoEvent: EventEmitter<number> = new EventEmitter<number>();
+  @Output() editedTodoEvent: EventEmitter<Todo> = new EventEmitter<Todo>();
 
   constructor(private elementRef: ElementRef) {
   }
@@ -21,30 +21,38 @@ export class TodoListItemComponent {
    * Отправляет действие клика на чекбокс родителю
    */
   toggleChecked(): void {
-    this.checkedTodoEvent.emit(this.todo.id);
+    if (this.todo && this.todo.id) {
+      this.checkedTodoEvent.emit(this.todo.id);
+    }
   }
 
   /**
    * Отправляет действие клика на удаление todo родителю
    */
   removeTodo(): void {
-    this.removeTodoEvent.emit(this.todo.id);
+    if (this.todo && this.todo.id) {
+      this.removeTodoEvent.emit(this.todo.id);
+    }
   }
 
   /**
    * Открывает редактор todo
    */
   openEdit(): void {
-    this.todoText = this.todo.title;
-    this.isEdit = true;
+    if (this.todo && this.todo.title) {
+      this.todoText = this.todo.title;
+      this.isEdit = true;
+    }
   }
 
   /**
    * Закрывает редактор todo и отправляет новые значения todo родителю
    */
   closeEdit(): void {
-    this.editedTodoEvent.emit({title: this.todoText, id: this.todo.id, status: this.todo.status});
-    this.isEdit = false;
+    if (this.todo && this.todo.id) {
+      this.editedTodoEvent.emit({title: this.todoText, id: this.todo.id, status: this.todo.status});
+      this.isEdit = false;
+    }
   }
 
   /**

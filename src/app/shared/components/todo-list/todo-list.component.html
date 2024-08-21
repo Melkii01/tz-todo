@@ -1,4 +1,4 @@
-<main class="main" *ngIf="todos.length!==0">
+<main class="main" *ngIf="todos && todos.length!==0">
   <ul class="todo-list">
     <app-todo-list-item *ngFor="let todo of todos"
                         [todo]="todo"

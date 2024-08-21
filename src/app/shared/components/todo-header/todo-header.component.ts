@@ -7,7 +7,7 @@ import {Component, EventEmitter, Output} from '@angular/core';
 })
 export class TodoHeaderComponent {
   newTodo: string = ''
-  @Output() inputEvent = new EventEmitter<string>();
+  @Output() inputEvent: EventEmitter<string> = new EventEmitter<string>();
 
   addTodo(): void {
     this.inputEvent.emit(this.newTodo);
