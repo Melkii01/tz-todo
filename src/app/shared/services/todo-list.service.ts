@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Todo} from "../types/todo";
-import {BehaviorSubject} from "rxjs";
+import {BehaviorSubject, map} from "rxjs";
 import {FilterNames} from "../types/filter-names";
 import {ServiceNames} from "../types/service-names";
 
@@ -11,8 +11,12 @@ export class TodoListService {
   todos$: BehaviorSubject<Todo[]> = new BehaviorSubject<Todo[]>(JSON.parse(window.localStorage.getItem(ServiceNames.todosList) || '[]'));
   showedTodos$: BehaviorSubject<Todo[]> = new BehaviorSubject<Todo[]>(JSON.parse(window.localStorage.getItem(ServiceNames.todosList) || '[]'));
 
-  countLeft$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
-  checkedAtLeastOne$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  countLeft$ = this.todos$.pipe(
+    map(todoList => todoList.filter(e => !e.status).length)
+  );
+  checkedAtLeastOne$ = this.todos$.pipe(
+    map(todoList => todoList.some(e => e.status))
+  );
 
   /**
    * Показывает отфильтрованный показываемый список todo
@@ -26,24 +30,24 @@ export class TodoListService {
     }
   }
 
-  /**
-   * Показывает количество незавершенных todo и показывает хотя бы один завершенный todo
-   */
-  completedCheckListCount(): void {
-    let quantity: number = 0;
-    let checked: boolean = false;
+  // /**
+  //  * Показывает количество незавершенных todo и показывает хотя бы один завершенный todo
+  //  */
+  // completedCheckListCount(): void {
+  //   let quantity: number = 0;
+  //   let checked: boolean = false;
 
-    this.todos$.getValue().forEach((todo: Todo): void => {
-      if (!todo.status) {
-        quantity++;
-      } else if (todo.status) {
-        checked = true;
-      }
-    });
+  //   this.todos$.getValue().forEach((todo: Todo): void => {
+  //     if (!todo.status) {
+  //       quantity++;
+  //     } else if (todo.status) {
+  //       checked = true;
+  //     }
+  //   });
 
-    this.countLeft$.next(quantity);
-    this.checkedAtLeastOne$.next(checked);
-  }
+  //   this.countLeft$.next(quantity);
+  //   this.checkedAtLeastOne$.next(checked);
+  // }
 
   /**
    * Отправляет новый отредактированный список на сервер и на подписки

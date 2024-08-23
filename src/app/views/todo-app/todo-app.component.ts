@@ -15,8 +15,8 @@ export class TodoAppComponent implements OnInit, OnDestroy {
   todos$: BehaviorSubject<Todo[]> = this.todosListService.todos$;
   showedTodos$: BehaviorSubject<Todo[]> = this.todosListService.showedTodos$;
   private activeQueryParams: { filter: string } = {filter: ''};
-  countLeft$: BehaviorSubject<number> = this.todosListService.countLeft$;
-  checkedAtLeastOne$: BehaviorSubject<boolean> = this.todosListService.checkedAtLeastOne$;
+  countLeft$ = this.todosListService.countLeft$;
+  checkedAtLeastOne$ = this.todosListService.checkedAtLeastOne$;
   private destroy$: Subject<void> = new Subject<void>();
 
   constructor(private activatedRoute: ActivatedRoute,
@@ -39,7 +39,7 @@ export class TodoAppComponent implements OnInit, OnDestroy {
    */
   showedTodosWithFilter(): void {
     this.todosListService.showedTodosWithFilter(this.activeQueryParams.filter);
-    this.todosListService.completedCheckListCount();
+    // this.todosListService.completedCheckListCount();
   }
 
   /**
