@@ -3,17 +3,19 @@
     <h1>Todos</h1>
     <app-todo-header (inputEvent)="addTodo($event)"></app-todo-header>
 
-    <app-todo-list [todos]="(showedTodos$ | async) || []"
-                   [countAll]="(todos$ | async)?.length"
-                   (checkedTodoEvent)="toggleCheckedTodo($event)"
-                   (checkedAllTodoEvent)="checkedAllTodo()"
-                   (editedTodoEvent)="editTodo($event)"
-                   (removeTodoEvent)="removeTodo($event)"></app-todo-list>
+    <ng-container *ngIf="todos$ | async as todos">
+      <app-todo-list [showedTodos]="(showedTodos$ | async) || []"
+                     [countAll]="todos.length"
+                     (checkedTodoEvent)="toggleCheckedTodo($event)"
+                     (checkedAllTodoEvent)="checkedAllTodo()"
+                     (editedTodoEvent)="editTodo($event)"
+                     (removeTodoEvent)="removeTodo($event)"></app-todo-list>
 
-    <app-todo-footer *ngIf="(todos$ | async)?.length !== 0"
-                     [count]="countLeft$ | async"
-                     [checkedAtLeastOne]="checkedAtLeastOne$ | async"
-                     (clearedCompletedEvent)="clearedCompleted()"></app-todo-footer>
+      <app-todo-footer *ngIf="todos.length !== 0"
+                       [count]="countLeft$ | async"
+                       [checkedAtLeastOne]="checkedAtLeastOne$ | async"
+                       (clearedCompletedEvent)="clearedCompleted()"></app-todo-footer>
+    </ng-container>
   </section>
 
   <footer class="info">

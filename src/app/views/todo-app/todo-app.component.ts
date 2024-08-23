@@ -42,7 +42,6 @@ export class TodoAppComponent implements OnInit, OnDestroy {
   addTodo(newTodoName: string): void {
     if (newTodoName) {
       this.todosListService.addTodo(newTodoName, this.activeQueryParams.filter);
-      // this.showedTodosWithFilter();
     }
   }
 
@@ -52,7 +51,6 @@ export class TodoAppComponent implements OnInit, OnDestroy {
    */
   toggleCheckedTodo(id: number): void {
     this.todosListService.toggleCheckedTodo(id, this.activeQueryParams.filter);
-    // this.showedTodosWithFilter();
   }
 
   /**
@@ -60,7 +58,6 @@ export class TodoAppComponent implements OnInit, OnDestroy {
    */
   checkedAllTodo(): void {
     this.todosListService.checkedAllTodo(this.activeQueryParams.filter);
-    // this.showedTodosWithFilter();
   }
 
   /**
@@ -69,7 +66,6 @@ export class TodoAppComponent implements OnInit, OnDestroy {
    */
   removeTodo(id: number): void {
     this.todosListService.removeTodo(id, this.activeQueryParams.filter);
-    // this.showedTodosWithFilter();
   }
 
   /**
@@ -77,7 +73,6 @@ export class TodoAppComponent implements OnInit, OnDestroy {
    */
   clearedCompleted(): void {
     this.todosListService.clearedCompleted(this.activeQueryParams.filter);
-    // this.showedTodosWithFilter();
   }
 
   /**
@@ -85,7 +80,6 @@ export class TodoAppComponent implements OnInit, OnDestroy {
    */
   editTodo(event: Todo): void {
     this.todosListService.editTodo(event, this.activeQueryParams.filter);
-    // this.showedTodosWithFilter();
   }
 
   ngOnDestroy(): void {

@@ -8,7 +8,7 @@ import {Todo} from "../../types/todo";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TodoListComponent {
-  @Input() todos: Todo[] = [];
+  @Input() showedTodos: Todo[] = [];
   @Input() countAll: number | undefined = 0;
   @Output() checkedTodoEvent: EventEmitter<number> = new EventEmitter<number>();
   @Output() removeTodoEvent: EventEmitter<number> = new EventEmitter<number>();

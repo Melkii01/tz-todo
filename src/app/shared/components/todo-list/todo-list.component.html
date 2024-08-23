@@ -1,6 +1,6 @@
-<main class="main" *ngIf="todos && todos.length!==0">
+<main class="main" *ngIf="showedTodos && showedTodos.length!==0">
   <ul class="todo-list">
-    <app-todo-list-item *ngFor="let todo of todos"
+    <app-todo-list-item *ngFor="let todo of showedTodos"
                         [todo]="returnSpreadTodo(todo)"
                         (checkedTodoEvent)="checkedTodo($event)"
                         (removeTodoEvent)="removeTodo($event)"
