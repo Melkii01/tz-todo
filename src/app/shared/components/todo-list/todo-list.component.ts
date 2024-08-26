@@ -1,18 +1,27 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {Todo} from "../../types/todo";
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { Todo } from "../../types/todo";
 
 @Component({
   selector: 'app-todo-list',
   templateUrl: './todo-list.component.html',
-  styleUrls: ['./todo-list.component.scss']
+  styleUrls: ['./todo-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TodoListComponent {
-  @Input() todos: Todo[] = [];
+  @Input() showedTodos: Todo[] = [];
   @Input() countAll: number | undefined = 0;
   @Output() checkedTodoEvent: EventEmitter<number> = new EventEmitter<number>();
   @Output() removeTodoEvent: EventEmitter<number> = new EventEmitter<number>();
   @Output() checkedAllTodoEvent: EventEmitter<string> = new EventEmitter<string>();
   @Output() editedTodoEvent: EventEmitter<Todo> = new EventEmitter<Todo>();
+
+  /**
+   * Возвращает с новой ссылкой объект todo
+   * @param todo данные todo
+   */
+  returnSpreadTodo(todo: Todo): Todo {
+    return { ...todo };
+  }
 
   /**
    * Отправляет отметку todo родителю
@@ -34,6 +43,7 @@ export class TodoListComponent {
    * Отправляет все отметки todos родителю
    */
   checkedAllTodo(): void {
+    console.log("🚀 ~ file: todo-list.component.ts:46 ~ TodoListComponent ~ checkedAllTodo:")
     this.checkedAllTodoEvent.emit('');
   }
 
