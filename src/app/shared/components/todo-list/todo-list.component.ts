@@ -16,14 +16,6 @@ export class TodoListComponent {
   @Output() editedTodoEvent: EventEmitter<Todo> = new EventEmitter<Todo>();
 
   /**
-   * Возвращает с новой ссылкой объект todo
-   * @param todo данные todo
-   */
-  returnSpreadTodo(todo: Todo): Todo {
-    return { ...todo };
-  }
-
-  /**
    * Отправляет отметку todo родителю
    * @param id идентификатор todo
    */
@@ -43,7 +35,6 @@ export class TodoListComponent {
    * Отправляет все отметки todos родителю
    */
   checkedAllTodo(): void {
-    console.log("🚀 ~ file: todo-list.component.ts:46 ~ TodoListComponent ~ checkedAllTodo:")
     this.checkedAllTodoEvent.emit('');
   }
 

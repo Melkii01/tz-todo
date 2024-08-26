@@ -57,7 +57,6 @@ export class TodoAppComponent implements OnInit, OnDestroy {
    * Отмечает выполненными все todo или убирает метки
    */
   checkedAllTodo(): void {
-    console.log("🚀 ~ file: todo-app.component.ts:60 ~ TodoAppComponent ~ checkedAllTodo:")
     this.todosListService.checkedAllTodo(this.activeQueryParams.filter);
   }
 

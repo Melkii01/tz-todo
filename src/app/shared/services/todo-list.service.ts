@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
-import { Todo } from "../types/todo";
-import { BehaviorSubject, map, Observable } from "rxjs";
-import { FilterNames } from "../types/filter-names";
-import { ServiceNames } from "../types/service-names";
+import {Injectable} from '@angular/core';
+import {Todo} from "../types/todo";
+import {BehaviorSubject, map, Observable} from "rxjs";
+import {FilterNames} from "../types/filter-names";
+import {ServiceNames} from "../types/service-names";
 
 @Injectable({
   providedIn: 'root'
@@ -43,10 +43,10 @@ export class TodoListService {
   addTodo(newTodoName: string, filterParam: string): void {
     const oldTodos: Todo[] = this.todos$.getValue();
     this.setNewTodosList([...oldTodos, {
-      title: newTodoName,
-      status: false,
-      id: Date.now()
-    }],
+        title: newTodoName,
+        status: false,
+        id: Date.now()
+      }],
       filterParam);
   }
 
@@ -90,7 +90,6 @@ export class TodoListService {
       }
     }
 
-    console.log("🚀 ~ file: todo-list.service.ts:95 ~ TodoListService ~ todos, filterParam:", todos, filterParam)
     this.setNewTodosList(structuredClone(todos), filterParam);
   }
 
