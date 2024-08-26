@@ -1,5 +1,5 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
-import {Todo} from "../../types/todo";
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { Todo } from "../../types/todo";
 
 @Component({
   selector: 'app-todo-list',
@@ -20,7 +20,7 @@ export class TodoListComponent {
    * @param todo данные todo
    */
   returnSpreadTodo(todo: Todo): Todo {
-    return {...todo};
+    return { ...todo };
   }
 
   /**
@@ -43,6 +43,7 @@ export class TodoListComponent {
    * Отправляет все отметки todos родителю
    */
   checkedAllTodo(): void {
+    console.log("🚀 ~ file: todo-list.component.ts:46 ~ TodoListComponent ~ checkedAllTodo:")
     this.checkedAllTodoEvent.emit('');
   }
 

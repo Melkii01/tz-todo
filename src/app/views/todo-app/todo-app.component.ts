@@ -1,9 +1,9 @@
-import {ChangeDetectionStrategy, Component, OnDestroy, OnInit} from '@angular/core';
-import {Todo} from "../../shared/types/todo";
-import {TodoListService} from "../../shared/services/todo-list.service";
-import {ActivatedRoute, Params} from "@angular/router";
-import {BehaviorSubject, Observable, Subject, takeUntil, tap} from "rxjs";
-import {FilterNames} from "../../shared/types/filter-names";
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Params } from "@angular/router";
+import { BehaviorSubject, Observable, Subject, takeUntil, tap } from "rxjs";
+import { TodoListService } from "../../shared/services/todo-list.service";
+import { FilterNames } from "../../shared/types/filter-names";
+import { Todo } from "../../shared/types/todo";
 
 @Component({
   selector: 'app-todo-app',
@@ -14,23 +14,23 @@ import {FilterNames} from "../../shared/types/filter-names";
 export class TodoAppComponent implements OnInit, OnDestroy {
   todos$: BehaviorSubject<Todo[]> = this.todosListService.todos$;
   showedTodos$: BehaviorSubject<Todo[]> = this.todosListService.showedTodos$;
-  private activeQueryParams: { filter: string } = {filter: ''};
+  private activeQueryParams: { filter: string } = { filter: '' };
   countLeft$: Observable<number> = this.todosListService.countLeft$;
   checkedAtLeastOne$: Observable<boolean> = this.todosListService.checkedAtLeastOne$;
   private destroy$: Subject<void> = new Subject<void>();
 
   constructor(private activatedRoute: ActivatedRoute,
-              private todosListService: TodoListService) {
+    private todosListService: TodoListService) {
   }
 
   ngOnInit(): void {
     this.activatedRoute.queryParams.pipe(
       tap(((params: Params): void => {
-          this.activeQueryParams.filter = params[FilterNames.filter];
+        this.activeQueryParams.filter = params[FilterNames.filter];
 
-          /** Показывает отфильрованный показываемый список todo */
-          this.todosListService.setNewTodosList(this.todos$.getValue(), this.activeQueryParams.filter);
-        }),
+        /** Показывает отфильрованный показываемый список todo */
+        this.todosListService.setNewTodosList(this.todos$.getValue(), this.activeQueryParams.filter);
+      }),
       ),
       takeUntil(this.destroy$)).subscribe();
   }
@@ -57,6 +57,7 @@ export class TodoAppComponent implements OnInit, OnDestroy {
    * Отмечает выполненными все todo или убирает метки
    */
   checkedAllTodo(): void {
+    console.log("🚀 ~ file: todo-app.component.ts:60 ~ TodoAppComponent ~ checkedAllTodo:")
     this.todosListService.checkedAllTodo(this.activeQueryParams.filter);
   }
 
