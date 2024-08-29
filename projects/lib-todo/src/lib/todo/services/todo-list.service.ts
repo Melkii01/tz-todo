@@ -60,7 +60,7 @@ export class TodoListService {
    * @param filterParam параметр фильтрации из url
    */
   toggleCheckedTodo(id: number, filterParam: string): void {
-    const todos: Todo[] = this.todos$.getValue();
+    const todos: Todo[] | [] = this.todos$.getValue();
 
     todos.find((todo: Todo): void => {
       if (todo.id === id) {
