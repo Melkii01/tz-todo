@@ -121,7 +121,7 @@ export class TodoListService {
    * @param filterParam параметр фильтрации из url
    */
   editTodo(event: Todo, filterParam: string): void {
-    const todos: Todo[] = this.todos$.getValue();
+    const todos: Todo[] | [] = this.todos$.getValue();
 
     todos.find((todo: Todo): void => {
       if (todo.id === event.id) {
