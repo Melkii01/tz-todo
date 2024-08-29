@@ -8,8 +8,8 @@ import {ServiceNames} from "../types/service-names";
   providedIn: 'root'
 })
 export class TodoListService {
-  todos$: BehaviorSubject<Todo[]> = new BehaviorSubject<Todo[]>(this.getTodosDataFromLocaleStorage());
-  showedTodos$: BehaviorSubject<Todo[]> = new BehaviorSubject<Todo[]>(this.getTodosDataFromLocaleStorage());
+  todos$: BehaviorSubject<Todo[] | []> = new BehaviorSubject<Todo[] | []>(this.getTodosDataFromLocaleStorage());
+  showedTodos$: BehaviorSubject<Todo[] | []> = new BehaviorSubject<Todo[] | []>(this.getTodosDataFromLocaleStorage());
 
   countLeft$: Observable<number> = this.todos$.pipe(
     map((todos: Todo[]) => todos.filter((todo: Todo) => !todo.status).length)
@@ -21,7 +21,7 @@ export class TodoListService {
   /**
    * Возвращает данные из local storage или пустой массив
    */
-  private getTodosDataFromLocaleStorage() {
+  private getTodosDataFromLocaleStorage(): Todo[] | [] {
     return JSON.parse(window.localStorage.getItem(ServiceNames.todosList) || '[]');
   }
 
