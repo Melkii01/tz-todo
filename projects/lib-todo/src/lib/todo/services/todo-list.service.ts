@@ -112,9 +112,7 @@ export class TodoListService {
    * @param filterParam параметр фильтрации из url
    */
   clearedCompleted(filterParam: string): void {
-    const todos: Todo[] = this.todos$.getValue().filter((todo: Todo): boolean => !todo.status);
-
-    this.setNewTodosList(todos, filterParam);
+    this.setNewTodosList(this.todos$.getValue().filter((todo: Todo): boolean => !todo.status), filterParam);
   }
 
   /**
