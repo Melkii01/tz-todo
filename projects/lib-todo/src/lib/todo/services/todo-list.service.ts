@@ -30,7 +30,7 @@ export class TodoListService {
    * @param newTodos новый список todo
    * @param filterParam параметр фильтрации из url
    */
-  setNewTodosList(newTodos: Todo[], filterParam: string): void {
+  setNewTodosList(newTodos: Todo[] | [], filterParam: string): void {
     window.localStorage.setItem(ServiceNames.todosList, JSON.stringify(newTodos));
     this.todos$.next(newTodos);
     if (filterParam === FilterNames.active || filterParam === FilterNames.completed) {
