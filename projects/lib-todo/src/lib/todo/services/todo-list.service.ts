@@ -46,8 +46,7 @@ export class TodoListService {
    * @param filterParam параметр фильтрации из url
    */
   addTodo(newTodoName: string, filterParam: string): void {
-    const oldTodos: Todo[] = this.todos$.getValue();
-    this.setNewTodosList([...oldTodos, {
+    this.setNewTodosList([...this.todos$.getValue(), {
         title: newTodoName,
         status: false,
         id: Date.now()
