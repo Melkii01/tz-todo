@@ -104,9 +104,7 @@ export class TodoListService {
    * @param filterParam параметр фильтрации из url
    */
   removeTodo(id: number, filterParam: string): void {
-    const todos: Todo[] = this.todos$.getValue().filter((todo: Todo): boolean => todo.id !== id);
-
-    this.setNewTodosList(todos, filterParam);
+    this.setNewTodosList(this.todos$.getValue().filter((todo: Todo): boolean => todo.id !== id), filterParam);
   }
 
   /**
