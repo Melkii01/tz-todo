@@ -8,10 +8,8 @@ import {ServiceNames} from "../types/service-names";
   providedIn: 'root'
 })
 export class TodoListService {
-  todos$: BehaviorSubject<Todo[]> = new BehaviorSubject<Todo[]>(
-    JSON.parse(window.localStorage.getItem(ServiceNames.todosList) || '[]'));
-  showedTodos$: BehaviorSubject<Todo[]> = new BehaviorSubject<Todo[]>(
-    JSON.parse(window.localStorage.getItem(ServiceNames.todosList) || '[]'));
+  todos$: BehaviorSubject<Todo[]> = new BehaviorSubject<Todo[]>(this.getTodosDataFromLocaleStorage());
+  showedTodos$: BehaviorSubject<Todo[]> = new BehaviorSubject<Todo[]>(this.getTodosDataFromLocaleStorage());
 
   countLeft$: Observable<number> = this.todos$.pipe(
     map((todos: Todo[]) => todos.filter((todo: Todo) => !todo.status).length)
@@ -19,6 +17,13 @@ export class TodoListService {
   checkedAtLeastOne$: Observable<boolean> = this.todos$.pipe(
     map((todos: Todo[]) => todos.some((todo: Todo) => todo.status))
   );
+
+  /**
+   * Возвращает данные из local storage или пустой массив
+   */
+  private getTodosDataFromLocaleStorage() {
+    return JSON.parse(window.localStorage.getItem(ServiceNames.todosList) || '[]');
+  }
 
   /**
    * Отправляет новый отредактированный список на сервер и на подписки
