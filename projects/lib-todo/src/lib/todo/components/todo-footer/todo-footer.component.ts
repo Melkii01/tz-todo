@@ -13,7 +13,7 @@ export class TodoFooterComponent implements OnInit, OnDestroy {
   @Input() count: number | null = 0;
   @Input() checkedAtLeastOne: boolean | null = false;
   @Output() clearedCompletedEvent: EventEmitter<string> = new EventEmitter<string>();
-  filterParam$: BehaviorSubject<string> = new BehaviorSubject<string>('');
+  filterParam: string = '';
   protected readonly FilterNames = FilterNames;
   private destroy$: Subject<void> = new Subject<void>()
 
@@ -27,20 +27,8 @@ export class TodoFooterComponent implements OnInit, OnDestroy {
 
   init(): void {
     this.activatedRoute.queryParams.pipe(
-      tap((params: Params) => {
-        switch (params[FilterNames.filter]) {
-          case FilterNames.all:
-            this.filterParam$.next(FilterNames.all);
-            break;
-
-          case FilterNames.active:
-            this.filterParam$.next(FilterNames.active);
-            break;
-
-          case FilterNames.completed:
-            this.filterParam$.next(FilterNames.completed);
-            break;
-        }
+      tap((params: Params): void => {
+        this.filterParam = params[FilterNames.filter];
       }),
 
       takeUntil(this.destroy$)

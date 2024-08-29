@@ -2,18 +2,18 @@
   <div class="count">{{ count }} items left</div>
 
   <div class="status">
-    <div class="status-item selected"
-         [class.selected]="(filterParam$ | async) === FilterNames.all || (filterParam$ | async) ===''"
+    <div class="status-item"
+         [class.selected]="filterParam === FilterNames.all || !filterParam"
          (click)="choosingFilterParam(FilterNames.all)">All
     </div>
 
     <div class="status-item"
-         [class.selected]="(filterParam$ | async) === FilterNames.active"
+         [class.selected]="filterParam === FilterNames.active"
          (click)="choosingFilterParam(FilterNames.active)">Active
     </div>
 
     <div class="status-item"
-         [class.selected]="(filterParam$ | async) === FilterNames.completed"
+         [class.selected]="filterParam === FilterNames.completed"
          (click)="choosingFilterParam(FilterNames.completed)">Completed
     </div>
   </div>
