@@ -77,7 +77,7 @@ export class TodoListService {
    *
    */
   checkedAllTodo(filterParam: string): void {
-    let todos: Todo[] = this.todos$.getValue();
+    let todos: Todo[] | [] = this.todos$.getValue();
 
     // В активном фильтре отмечаем все, в завершенном фильтре убираем отметки
     if (filterParam === FilterNames.active || filterParam === FilterNames.completed) {
