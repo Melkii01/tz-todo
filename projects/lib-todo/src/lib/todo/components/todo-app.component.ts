@@ -1,9 +1,9 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Params } from "@angular/router";
-import { BehaviorSubject, Observable, Subject, takeUntil, tap } from "rxjs";
-import { TodoListService } from "../services/todo-list.service";
-import { FilterNames } from "../types/filter-names";
-import { Todo } from "../types/todo";
+import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {ActivatedRoute, Params} from "@angular/router";
+import {BehaviorSubject, map, Observable, tap} from "rxjs";
+import {TodoListService} from "../services/todo-list.service";
+import {FilterNames} from "../types/filter-names";
+import {Todo} from "../types/todo";
 
 @Component({
   selector: 'todo-app',
@@ -11,28 +11,24 @@ import { Todo } from "../types/todo";
   styleUrls: ['./todo-app.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TodoAppComponent implements OnInit, OnDestroy {
+export class TodoAppComponent {
   todos$: BehaviorSubject<Todo[]> = this.todosListService.todos$;
   showedTodos$: BehaviorSubject<Todo[]> = this.todosListService.showedTodos$;
-  private activeQueryParams: { filter: string } = { filter: '' };
   countLeft$: Observable<number> = this.todosListService.countLeft$;
   checkedAtLeastOne$: Observable<boolean> = this.todosListService.checkedAtLeastOne$;
-  private destroy$: Subject<void> = new Subject<void>();
+
+  private filterParam: string = '';
+  filterParam$: Observable<string> = this.activatedRoute.queryParams.pipe(
+    map((params: Params) => params[FilterNames.filter] ? params[FilterNames.filter] : ' '),
+    tap((filter: string): void => {
+      this.filterParam = filter;
+      /** Показывает отфильрованный показываемый список todo */
+      this.todosListService.setNewTodosList(this.todos$.getValue(), filter);
+    }),
+  );
 
   constructor(private activatedRoute: ActivatedRoute,
-    private todosListService: TodoListService) {
-  }
-
-  ngOnInit(): void {
-    this.activatedRoute.queryParams.pipe(
-      tap(((params: Params): void => {
-        this.activeQueryParams.filter = params[FilterNames.filter];
-
-        /** Показывает отфильрованный показываемый список todo */
-        this.todosListService.setNewTodosList(this.todos$.getValue(), this.activeQueryParams.filter);
-      }),
-      ),
-      takeUntil(this.destroy$)).subscribe();
+              private todosListService: TodoListService) {
   }
 
   /**
@@ -41,7 +37,7 @@ export class TodoAppComponent implements OnInit, OnDestroy {
    */
   addTodo(newTodoName: string): void {
     if (newTodoName) {
-      this.todosListService.addTodo(newTodoName, this.activeQueryParams.filter);
+      this.todosListService.addTodo(newTodoName, this.filterParam);
     }
   }
 
@@ -50,14 +46,14 @@ export class TodoAppComponent implements OnInit, OnDestroy {
    * @param id идентификатор todo
    */
   toggleCheckedTodo(id: number): void {
-    this.todosListService.toggleCheckedTodo(id, this.activeQueryParams.filter);
+    this.todosListService.toggleCheckedTodo(id, this.filterParam);
   }
 
   /**
    * Отмечает выполненными все todo или убирает метки
    */
   checkedAllTodo(): void {
-    this.todosListService.checkedAllTodo(this.activeQueryParams.filter);
+    this.todosListService.checkedAllTodo(this.filterParam);
   }
 
   /**
@@ -65,25 +61,20 @@ export class TodoAppComponent implements OnInit, OnDestroy {
    * @param id идентификатор todo
    */
   removeTodo(id: number): void {
-    this.todosListService.removeTodo(id, this.activeQueryParams.filter);
+    this.todosListService.removeTodo(id, this.filterParam);
   }
 
   /**
    * Убирает из списка завершенные todo
    */
   clearedCompleted(): void {
-    this.todosListService.clearedCompleted(this.activeQueryParams.filter);
+    this.todosListService.clearedCompleted(this.filterParam);
   }
 
   /**
    * Редактироует todo
    */
   editTodo(event: Todo): void {
-    this.todosListService.editTodo(event, this.activeQueryParams.filter);
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+    this.todosListService.editTodo(event, this.filterParam);
   }
 }

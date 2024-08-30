@@ -4,21 +4,23 @@
     <todo-header (inputEvent)="addTodo($event)"></todo-header>
 
     <ng-container *ngIf="todos$ | async as todos">
-      <todo-list
-        [showedTodos]="(showedTodos$ | async) || []"
-        [countAll]="todos.length"
-        (checkedTodoEvent)="toggleCheckedTodo($event)"
-        (checkedAllTodoEvent)="checkedAllTodo()"
-        (editedTodoEvent)="editTodo($event)"
-        (removeTodoEvent)="removeTodo($event)">
-      </todo-list>
+      <ng-container *ngIf="filterParam$ | async">
+        <todo-list
+          [showedTodos]="(showedTodos$ | async) || []"
+          [countAll]="todos.length"
+          (checkedTodoEvent)="toggleCheckedTodo($event)"
+          (checkedAllTodoEvent)="checkedAllTodo()"
+          (editedTodoEvent)="editTodo($event)"
+          (removeTodoEvent)="removeTodo($event)">
+        </todo-list>
 
-      <todo-footer
-        *ngIf="todos.length !== 0"
-        [count]="countLeft$ | async"
-        [checkedAtLeastOne]="checkedAtLeastOne$ | async"
-        (clearedCompletedEvent)="clearedCompleted()">
-      </todo-footer>
+        <todo-footer
+          *ngIf="todos.length !== 0"
+          [count]="countLeft$ | async"
+          [checkedAtLeastOne]="checkedAtLeastOne$ | async"
+          (clearedCompletedEvent)="clearedCompleted()">
+        </todo-footer>
+      </ng-container>
     </ng-container>
   </section>
 
