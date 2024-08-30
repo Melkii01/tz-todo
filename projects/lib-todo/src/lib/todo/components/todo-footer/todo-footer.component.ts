@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
-import {Observable, tap} from "rxjs";
+import {map, Observable} from "rxjs";
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {FilterNames} from "../../types/filter-names";
 
@@ -10,16 +10,12 @@ import {FilterNames} from "../../types/filter-names";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TodoFooterComponent {
+  protected readonly FilterNames = FilterNames;
   @Input() count: number | null = 0;
   @Input() checkedAtLeastOne: boolean | null = false;
   @Output() clearedCompletedEvent: EventEmitter<string> = new EventEmitter<string>();
-  filterParam: string = '';
-  filterParam$: Observable<Params> = this.activatedRoute.queryParams.pipe(
-    tap((params: Params): void => {
-      this.filterParam = params[FilterNames.filter];
-    })
-  );
-  protected readonly FilterNames = FilterNames;
+  filterParam$: Observable<string> = this.activatedRoute.queryParams.pipe(
+    map((params: Params) => params[FilterNames.filter] ? params[FilterNames.filter] : ' '),);
 
   constructor(private router: Router,
               private activatedRoute: ActivatedRoute) {
