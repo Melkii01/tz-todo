@@ -9,7 +9,7 @@ import { Todo } from "../../types/todo";
 })
 export class TodoListComponent {
   @Input() showedTodos: Todo[] = [];
-  @Input() countAll: number | undefined = 0;
+  @Input() countAll: number = 0;
   @Output() checkedTodoEvent: EventEmitter<number> = new EventEmitter<number>();
   @Output() removeTodoEvent: EventEmitter<number> = new EventEmitter<number>();
   @Output() checkedAllTodoEvent: EventEmitter<string> = new EventEmitter<string>();

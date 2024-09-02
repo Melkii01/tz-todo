@@ -2,22 +2,26 @@
   <div class="count">{{ count }} items left</div>
 
   <div class="status">
-    <div class="status-item selected"
-         [class.selected]="(filterParam$ | async) === FilterNames.all || (filterParam$ | async) ===''"
-         (click)="choosingFilterParam(FilterNames.all)">All
-    </div>
+    <ng-container *ngIf="(filterParam$ | async) as filterParam">
+      <div class="status-item"
+           [class.selected]="filterParam === FilterNames.all || filterParam === ' '"
+           (click)="choosingFilterParam(FilterNames.all)">All
+      </div>
 
-    <div class="status-item"
-         [class.selected]="(filterParam$ | async) === FilterNames.active"
-         (click)="choosingFilterParam(FilterNames.active)">Active
-    </div>
+      <div class="status-item"
+           [class.selected]="filterParam === FilterNames.active"
+           (click)="choosingFilterParam(FilterNames.active)">Active
+      </div>
 
-    <div class="status-item"
-         [class.selected]="(filterParam$ | async) === FilterNames.completed"
-         (click)="choosingFilterParam(FilterNames.completed)">Completed
-    </div>
+      <div class="status-item"
+           [class.selected]="filterParam === FilterNames.completed"
+           (click)="choosingFilterParam(FilterNames.completed)">Completed
+      </div>
+    </ng-container>
   </div>
+
   <div class="clear" (click)="clearCompleted()"
        [class.hidden]="!checkedAtLeastOne">Clear completed
   </div>
+
 </footer>

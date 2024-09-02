@@ -22,25 +22,21 @@ export class TodoListItemComponent {
    * Отправляет действие клика на чекбокс родителю
    */
   toggleChecked(): void {
-    if (this.todo && this.todo.id) {
-      this.checkedTodoEvent.emit(this.todo.id);
-    }
+    this.checkedTodoEvent.emit(this.todo?.id);
   }
 
   /**
    * Отправляет действие клика на удаление todo родителю
    */
   removeTodo(): void {
-    if (this.todo && this.todo.id) {
-      this.removeTodoEvent.emit(this.todo.id);
-    }
+    this.removeTodoEvent.emit(this.todo?.id);
   }
 
   /**
    * Открывает редактор todo
    */
   openEdit(): void {
-    if (this.todo && this.todo.title) {
+    if (this.todo) {
       this.todoText = this.todo.title;
       this.isEdit = true;
     }

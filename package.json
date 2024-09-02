@@ -6,6 +6,7 @@
     "start": "ng serve",
     "build": "ng build",
     "build-lib": "ng build lib-todo",
+    "build-lib-watch": "ng build lib-todo --watch",
     "build-prod": "npm run build-lib && ng build --output-path docs --base-href /tz-todo/",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
